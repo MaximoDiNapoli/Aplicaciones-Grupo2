@@ -6,6 +6,7 @@ public record ErrorResponse(
 		OffsetDateTime timestamp,
 		int status,
 		String error,
-		String message,
+        String message,
+        String message2,
 		String path) {
 }
