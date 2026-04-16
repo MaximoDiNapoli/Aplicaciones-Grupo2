@@ -7,6 +7,5 @@ public record ErrorResponse(
 		int status,
 		String error,
         String message,
-        String message2,
 		String path) {
 }
