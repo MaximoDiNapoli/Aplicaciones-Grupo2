@@ -9,6 +9,6 @@ import org.springframework.stereotype.Repository;
 import com.ecomerce.src.entity.Product;
 
 @Repository
-public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpecificationExecutor<Product> {
-	Optional<Product> findByIdAndActivoTrue(Long id);
+public interface ProductRepository extends JpaRepository<Product, Integer>, JpaSpecificationExecutor<Product> {
+	Optional<Product> findByIdAndActivoTrue(Integer id);
 }

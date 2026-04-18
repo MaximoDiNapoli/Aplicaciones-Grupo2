@@ -8,11 +8,14 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "Producto")
+@Table(name = "`Producto`")
 public class Product extends BaseEntity {
 
+	@Column(name = "id_usuario")
+	private Integer usuarioId;
+
 	@Column(name = "id_categoria")
-	private Long categoriaId;
+	private Integer categoriaId;
 
 	@Column(nullable = false)
 	private String nombre;
@@ -38,11 +41,19 @@ public class Product extends BaseEntity {
 	public Product() {
 	}
 
-	public Long getCategoriaId() {
+	public Integer getUsuarioId() {
+		return usuarioId;
+	}
+
+	public void setUsuarioId(Integer usuarioId) {
+		this.usuarioId = usuarioId;
+	}
+
+	public Integer getCategoriaId() {
 		return categoriaId;
 	}
 
-	public void setCategoriaId(Long categoriaId) {
+	public void setCategoriaId(Integer categoriaId) {
 		this.categoriaId = categoriaId;
 	}
 

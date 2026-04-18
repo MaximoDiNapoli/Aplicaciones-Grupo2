@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 import com.ecomerce.src.entity.EjemploPersistencia;
 
 @Repository
-public interface EjemploPersistenciaRepository extends JpaRepository<EjemploPersistencia, Long> {
+public interface EjemploPersistenciaRepository extends JpaRepository<EjemploPersistencia, Integer> {
 }

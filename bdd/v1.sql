@@ -97,3 +97,10 @@ CREATE TABLE DetalleCompra (
     FOREIGN KEY (id_compra) REFERENCES Compra(id) ON DELETE CASCADE,
     FOREIGN KEY (id_producto) REFERENCES Producto(id)
 );
+
+-- 4. Tablas auxiliares usadas por la API de ejemplo
+CREATE TABLE ejemplo_persistencia (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    nombre VARCHAR(255) NOT NULL,
+    descripcion VARCHAR(255) NOT NULL
+);

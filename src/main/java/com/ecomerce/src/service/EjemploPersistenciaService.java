@@ -11,5 +11,5 @@ public interface EjemploPersistenciaService {
 
 	List<EjemploPersistencia> listar();
 
-	EjemploPersistencia buscarPorId(Long id);
+	EjemploPersistencia buscarPorId(Integer id);
 }

@@ -35,15 +35,16 @@ public class ProductoController {
 
 	@GetMapping
 	public ResponseEntity<List<Product>> listar(
-			@RequestParam(required = false) Long categoria,
+			@RequestParam(required = false) Integer usuario,
+			@RequestParam(required = false) Integer categoria,
 			@RequestParam(required = false) String search,
 			@RequestParam(required = false) BigDecimal minPrecio,
 			@RequestParam(required = false) BigDecimal maxPrecio) {
-		return ResponseEntity.ok(productService.listar(categoria, search, minPrecio, maxPrecio));
+		return ResponseEntity.ok(productService.listar(usuario, categoria, search, minPrecio, maxPrecio));
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<Product> obtenerPorId(@PathVariable Long id) {
+	public ResponseEntity<Product> obtenerPorId(@PathVariable Integer id) {
 		return ResponseEntity.ok(productService.obtenerPorId(id));
 	}
 
@@ -54,12 +55,12 @@ public class ProductoController {
 	}
 
 	@PutMapping("/{id}")
-	public ResponseEntity<Product> actualizar(@PathVariable Long id, @Valid @RequestBody ProductRequest request) {
+	public ResponseEntity<Product> actualizar(@PathVariable Integer id, @Valid @RequestBody ProductRequest request) {
 		return ResponseEntity.ok(productService.actualizar(id, request));
 	}
 
 	@DeleteMapping("/{id}")
-	public ResponseEntity<Void> eliminarLogico(@PathVariable Long id) {
+	public ResponseEntity<Void> eliminarLogico(@PathVariable Integer id) {
 		productService.eliminarLogico(id);
 		return ResponseEntity.noContent().build();
 	}

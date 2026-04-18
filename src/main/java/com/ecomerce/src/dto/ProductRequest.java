@@ -10,7 +10,10 @@ import jakarta.validation.constraints.Size;
 
 public class ProductRequest {
 
-	private Long categoriaId;
+	@NotNull
+	private Integer usuarioId;
+
+	private Integer categoriaId;
 
 	@NotBlank
 	@Size(max = 255)
@@ -30,11 +33,19 @@ public class ProductRequest {
 	@Size(max = 255)
 	private String imagenUrl;
 
-	public Long getCategoriaId() {
+	public Integer getUsuarioId() {
+		return usuarioId;
+	}
+
+	public void setUsuarioId(Integer usuarioId) {
+		this.usuarioId = usuarioId;
+	}
+
+	public Integer getCategoriaId() {
 		return categoriaId;
 	}
 
-	public void setCategoriaId(Long categoriaId) {
+	public void setCategoriaId(Integer categoriaId) {
 		this.categoriaId = categoriaId;
 	}
 

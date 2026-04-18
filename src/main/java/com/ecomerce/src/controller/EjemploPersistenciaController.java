@@ -41,7 +41,7 @@ public class EjemploPersistenciaController {
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<EjemploPersistencia> buscarPorId(@PathVariable Long id) {
+	public ResponseEntity<EjemploPersistencia> buscarPorId(@PathVariable Integer id) {
 		return ResponseEntity.ok(service.buscarPorId(id));
 	}
 }

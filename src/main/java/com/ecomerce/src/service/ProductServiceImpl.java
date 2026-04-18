@@ -21,8 +21,12 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public List<Product> listar(Long categoria, String search, BigDecimal minPrecio, BigDecimal maxPrecio) {
+	public List<Product> listar(Integer usuario, Integer categoria, String search, BigDecimal minPrecio, BigDecimal maxPrecio) {
 		Specification<Product> spec = Specification.where(activos());
+
+		if (usuario != null) {
+			spec = spec.and((root, query, cb) -> cb.equal(root.get("usuarioId"), usuario));
+		}
 
 		if (categoria != null) {
 			spec = spec.and((root, query, cb) -> cb.equal(root.get("categoriaId"), categoria));
@@ -47,7 +51,7 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public Product obtenerPorId(Long id) {
+	public Product obtenerPorId(Integer id) {
 		return productRepository.findByIdAndActivoTrue(id)
 				.orElseThrow(() -> new ResourceNotFoundException("No existe el producto con id " + id));
 	}
@@ -61,14 +65,14 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public Product actualizar(Long id, ProductRequest request) {
+	public Product actualizar(Integer id, ProductRequest request) {
 		Product product = obtenerPorId(id);
 		applyRequest(product, request);
 		return productRepository.save(product);
 	}
 
 	@Override
-	public void eliminarLogico(Long id) {
+	public void eliminarLogico(Integer id) {
 		Product product = obtenerPorId(id);
 		product.setActivo(false);
 		productRepository.save(product);
@@ -79,6 +83,7 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	private void applyRequest(Product product, ProductRequest request) {
+		product.setUsuarioId(request.getUsuarioId());
 		product.setCategoriaId(request.getCategoriaId());
 		product.setNombre(request.getNombre());
 		product.setPrecio(request.getPrecio());

@@ -8,13 +8,13 @@ import com.ecomerce.src.entity.Product;
 
 public interface ProductService {
 
-	List<Product> listar(Long categoria, String search, BigDecimal minPrecio, BigDecimal maxPrecio);
+	List<Product> listar(Integer usuario, Integer categoria, String search, BigDecimal minPrecio, BigDecimal maxPrecio);
 
-	Product obtenerPorId(Long id);
+	Product obtenerPorId(Integer id);
 
 	Product crear(ProductRequest request);
 
-	Product actualizar(Long id, ProductRequest request);
+	Product actualizar(Integer id, ProductRequest request);
 
-	void eliminarLogico(Long id);
+	void eliminarLogico(Integer id);
 }

@@ -30,7 +30,7 @@ public class EjemploPersistenciaServiceImpl implements EjemploPersistenciaServic
 	}
 
 	@Override
-	public EjemploPersistencia buscarPorId(Long id) {
+	public EjemploPersistencia buscarPorId(Integer id) {
 		return repository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException("No existe un ejemplo de persistencia con id " + id));
 	}
