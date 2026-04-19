@@ -9,11 +9,11 @@ public interface CategoryService {
 
 	List<Category> listar();
 
-	Category obtenerPorId(Long id);
+	Category obtenerPorId(Integer id);
 
 	Category crear(CategoryRequest request);
 
-	Category actualizar(Long id, CategoryRequest request);
+	Category actualizar(Integer id, CategoryRequest request);
 
-	void eliminar(Long id);
+	void eliminar(Integer id);
 }

@@ -24,7 +24,7 @@ public class CategoryServiceImpl implements CategoryService {
 	}
 
 	@Override
-	public Category obtenerPorId(Long id) {
+	public Category obtenerPorId(Integer id) {
 		return categoryRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException("No existe la categoria con id " + id));
 	}
@@ -36,7 +36,7 @@ public class CategoryServiceImpl implements CategoryService {
 	}
 
 	@Override
-	public Category actualizar(Long id, CategoryRequest request) {
+	public Category actualizar(Integer id, CategoryRequest request) {
 		Category category = obtenerPorId(id);
 		category.setNombre(request.getNombre());
 		category.setDescripcion(request.getDescripcion());
@@ -44,7 +44,7 @@ public class CategoryServiceImpl implements CategoryService {
 	}
 
 	@Override
-	public void eliminar(Long id) {
+	public void eliminar(Integer id) {
 		Category category = obtenerPorId(id);
 		categoryRepository.delete(category);
 	}
