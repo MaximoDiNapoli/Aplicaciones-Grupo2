@@ -38,10 +38,10 @@ Esta es la ruta mas util si quieres ver la base desde Workbench.
 Ejemplo en PowerShell:
 
 ```powershell
-& 'C:\Program Files\MySQL\MySQL Server 8.0\bin\mysql.exe' --host=127.0.0.1 --port=3306 -uroot -e "CREATE DATABASE IF NOT EXISTS ecomerce_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
-Get-Content .\bdd\v1.sql | & 'C:\Program Files\MySQL\MySQL Server 8.0\bin\mysql.exe' --host=127.0.0.1 --port=3306 -uroot ecomerce_db
-Get-Content .\bdd\v2.sql | & 'C:\Program Files\MySQL\MySQL Server 8.0\bin\mysql.exe' --host=127.0.0.1 --port=3306 -uroot ecomerce_db
-Get-Content .\bdd\v3.sql | & 'C:\Program Files\MySQL\MySQL Server 8.0\bin\mysql.exe' --host=127.0.0.1 --port=3306 -uroot ecomerce_db
+& 'C:\Program Files\MySQL\MySQL Server 8.4\bin\mysql.exe' --host=127.0.0.1 --port=3306 -uroot -e "CREATE DATABASE IF NOT EXISTS ecomerce_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+& 'C:\Program Files\MySQL\MySQL Server 8.4\bin\mysql.exe' --host=127.0.0.1 --port=3306 -uroot ecomerce_db < .\bdd\v1.sql
+& 'C:\Program Files\MySQL\MySQL Server 8.4\bin\mysql.exe' --host=127.0.0.1 --port=3306 -uroot ecomerce_db < .\bdd\v2.sql
+& 'C:\Program Files\MySQL\MySQL Server 8.4\bin\mysql.exe' --host=127.0.0.1 --port=3306 -uroot ecomerce_db < .\bdd\v3.sql
 .\mvnw.cmd spring-boot:run
 ```
 
