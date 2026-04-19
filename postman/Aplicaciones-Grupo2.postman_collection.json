@@ -1,0 +1,619 @@
+{
+  "info": {
+    "_postman_id": "e8d6a9d2-6a42-4f98-ae39-0d72c6c3f6cf",
+    "name": "Aplicaciones-Grupo2 API",
+    "description": "Coleccion completa para probar la API de Aplicaciones-Grupo2.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://127.0.0.1:8080" },
+    { "key": "usuarioId", "value": "1" },
+    { "key": "metodoPagoId", "value": "1" },
+    { "key": "direccionEnvioId", "value": "1" },
+    { "key": "categoriaAId", "value": "" },
+    { "key": "categoriaBId", "value": "" },
+    { "key": "categoriaDeleteId", "value": "" },
+    { "key": "estadoId", "value": "" },
+    { "key": "estadoDeleteId", "value": "" },
+    { "key": "producto1Id", "value": "" },
+    { "key": "producto2Id", "value": "" },
+    { "key": "producto3Id", "value": "" },
+    { "key": "carritoId", "value": "" },
+    { "key": "itemId", "value": "" },
+    { "key": "compraId", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "GET /api/health",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/health"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Categorias",
+      "item": [
+        {
+          "name": "POST /api/categorias (A)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 201', function () { pm.response.to.have.status(201); });",
+                  "const data = pm.response.json();",
+                  "pm.collectionVariables.set('categoriaAId', data.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Postman Categoria A\",\n  \"descripcion\": \"Categoria para flujo completo\"\n}"
+            },
+            "url": "{{baseUrl}}/api/categorias"
+          }
+        },
+        {
+          "name": "POST /api/categorias (B)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 201', function () { pm.response.to.have.status(201); });",
+                  "const data = pm.response.json();",
+                  "pm.collectionVariables.set('categoriaBId', data.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Postman Categoria B\",\n  \"descripcion\": \"Categoria para flujo completo\"\n}"
+            },
+            "url": "{{baseUrl}}/api/categorias"
+          }
+        },
+        {
+          "name": "POST /api/categorias (Delete)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "pm.collectionVariables.set('categoriaDeleteId', data.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Categoria Temporal\",\n  \"descripcion\": \"Para delete\"\n}"
+            },
+            "url": "{{baseUrl}}/api/categorias"
+          }
+        },
+        {
+          "name": "GET /api/categorias",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/categorias"
+          }
+        },
+        {
+          "name": "GET /api/categorias/:id",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/categorias/{{categoriaAId}}"
+          }
+        },
+        {
+          "name": "PUT /api/categorias/:id",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Postman Categoria A Actualizada\",\n  \"descripcion\": \"Editada desde Postman\"\n}"
+            },
+            "url": "{{baseUrl}}/api/categorias/{{categoriaAId}}"
+          }
+        },
+        {
+          "name": "DELETE /api/categorias/:id",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/categorias/{{categoriaDeleteId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Estados",
+      "item": [
+        {
+          "name": "POST /api/estados (main)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "pm.collectionVariables.set('estadoId', data.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Pendiente\",\n  \"descripcion\": \"Estado inicial\"\n}"
+            },
+            "url": "{{baseUrl}}/api/estados"
+          }
+        },
+        {
+          "name": "POST /api/estados (delete)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "pm.collectionVariables.set('estadoDeleteId', data.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Pagado\",\n  \"descripcion\": \"Estado temporal\"\n}"
+            },
+            "url": "{{baseUrl}}/api/estados"
+          }
+        },
+        {
+          "name": "GET /api/estados",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/estados"
+          }
+        },
+        {
+          "name": "PUT /api/estados/:id",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Pendiente Actualizado\",\n  \"descripcion\": \"Estado editado\"\n}"
+            },
+            "url": "{{baseUrl}}/api/estados/{{estadoId}}"
+          }
+        },
+        {
+          "name": "DELETE /api/estados/:id",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/estados/{{estadoDeleteId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Productos",
+      "item": [
+        {
+          "name": "POST /api/productos (JSON producto 1)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "pm.collectionVariables.set('producto1Id', data.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"usuarioId\": {{usuarioId}},\n  \"categoriaId\": {{categoriaAId}},\n  \"nombre\": \"Postman Producto 1\",\n  \"precio\": 25.50,\n  \"descripcion\": \"Producto de prueba 1\",\n  \"stock\": 4\n}"
+            },
+            "url": "{{baseUrl}}/api/productos"
+          }
+        },
+        {
+          "name": "POST /api/productos (JSON producto 2)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "pm.collectionVariables.set('producto2Id', data.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"usuarioId\": {{usuarioId}},\n  \"categoriaId\": {{categoriaBId}},\n  \"nombre\": \"Postman Producto 2\",\n  \"precio\": 12.00,\n  \"descripcion\": \"Producto de prueba 2\",\n  \"stock\": 6\n}"
+            },
+            "url": "{{baseUrl}}/api/productos"
+          }
+        },
+        {
+          "name": "POST /api/productos (multipart con imagen)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "pm.collectionVariables.set('producto3Id', data.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "usuarioId", "value": "{{usuarioId}}", "type": "text" },
+                { "key": "categoriaId", "value": "{{categoriaAId}}", "type": "text" },
+                { "key": "nombre", "value": "Postman Producto 3 con foto", "type": "text" },
+                { "key": "precio", "value": "35.00", "type": "text" },
+                { "key": "descripcion", "value": "Producto multipart", "type": "text" },
+                { "key": "stock", "value": "8", "type": "text" },
+                { "key": "image", "type": "file", "src": "" }
+              ]
+            },
+            "url": "{{baseUrl}}/api/productos"
+          }
+        },
+        {
+          "name": "GET /api/productos",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/productos"
+          }
+        },
+        {
+          "name": "GET /api/productos/:id",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/productos/{{producto1Id}}"
+          }
+        },
+        {
+          "name": "GET /api/productos?categoria=:id",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/productos?categoria={{categoriaAId}}"
+          }
+        },
+        {
+          "name": "GET /api/productos?usuario=:id",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/productos?usuario={{usuarioId}}"
+          }
+        },
+        {
+          "name": "GET /api/productos?search=postman",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/productos?search=postman"
+          }
+        },
+        {
+          "name": "GET /api/productos?minPrecio=10&maxPrecio=40",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/productos?minPrecio=10&maxPrecio=40"
+          }
+        },
+        {
+          "name": "PUT /api/productos/:id (JSON)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"usuarioId\": {{usuarioId}},\n  \"categoriaId\": {{categoriaAId}},\n  \"nombre\": \"Postman Producto 1 Actualizado\",\n  \"precio\": 27.00,\n  \"descripcion\": \"Producto 1 actualizado\",\n  \"stock\": 5\n}"
+            },
+            "url": "{{baseUrl}}/api/productos/{{producto1Id}}"
+          }
+        },
+        {
+          "name": "PUT /api/productos/:id (multipart con imagen)",
+          "request": {
+            "method": "PUT",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "usuarioId", "value": "{{usuarioId}}", "type": "text" },
+                { "key": "categoriaId", "value": "{{categoriaAId}}", "type": "text" },
+                { "key": "nombre", "value": "Postman Producto 3 Actualizado", "type": "text" },
+                { "key": "precio", "value": "39.90", "type": "text" },
+                { "key": "descripcion", "value": "Producto multipart actualizado", "type": "text" },
+                { "key": "stock", "value": "9", "type": "text" },
+                { "key": "image", "type": "file", "src": "" }
+              ]
+            },
+            "url": "{{baseUrl}}/api/productos/{{producto3Id}}"
+          }
+        },
+        {
+          "name": "DELETE /api/productos/:id",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/productos/{{producto2Id}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Carrito",
+      "item": [
+        {
+          "name": "POST /api/carrito",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "pm.collectionVariables.set('carritoId', data.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Carrito flujo Postman\",\n  \"descripcion\": \"Carrito para compra\"\n}"
+            },
+            "url": "{{baseUrl}}/api/carrito"
+          }
+        },
+        {
+          "name": "GET /api/carrito",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/carrito"
+          }
+        },
+        {
+          "name": "GET /api/carrito/:id",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/carrito/{{carritoId}}"
+          }
+        },
+        {
+          "name": "PUT /api/carrito/:id",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Carrito flujo Postman actualizado\",\n  \"descripcion\": \"Editado\"\n}"
+            },
+            "url": "{{baseUrl}}/api/carrito/{{carritoId}}"
+          }
+        },
+        {
+          "name": "POST /api/carrito/items (item 1)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "pm.collectionVariables.set('itemId', data.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idCarrito\": {{carritoId}},\n  \"idProducto\": {{producto1Id}},\n  \"cantidad\": 2,\n  \"precioUnitario\": 27.00\n}"
+            },
+            "url": "{{baseUrl}}/api/carrito/items"
+          }
+        },
+        {
+          "name": "POST /api/carrito/items (item 2)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idCarrito\": {{carritoId}},\n  \"idProducto\": {{producto3Id}},\n  \"cantidad\": 1,\n  \"precioUnitario\": 39.90\n}"
+            },
+            "url": "{{baseUrl}}/api/carrito/items"
+          }
+        },
+        {
+          "name": "GET /api/carrito/:id/items",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/carrito/{{carritoId}}/items"
+          }
+        },
+        {
+          "name": "PUT /api/carrito/:id/items/:itemId",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idCarrito\": {{carritoId}},\n  \"idProducto\": {{producto1Id}},\n  \"cantidad\": 3,\n  \"precioUnitario\": 27.00\n}"
+            },
+            "url": "{{baseUrl}}/api/carrito/{{carritoId}}/items/{{itemId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Compras",
+      "item": [
+        {
+          "name": "POST /api/compras/:idCarrito",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "pm.collectionVariables.set('compraId', data.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idUsuario\": {{usuarioId}},\n  \"idMetodoPago\": {{metodoPagoId}},\n  \"idDireccionEnvio\": {{direccionEnvioId}}\n}"
+            },
+            "url": "{{baseUrl}}/api/compras/{{carritoId}}"
+          }
+        },
+        {
+          "name": "GET /api/compras/:idUsuario",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/compras/{{usuarioId}}"
+          }
+        },
+        {
+          "name": "GET /api/compra/:id",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/compra/{{compraId}}"
+          }
+        },
+        {
+          "name": "GET /api/compras/:id/detalle",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/compras/{{compraId}}/detalle"
+          }
+        },
+        {
+          "name": "PUT /api/compra/:id",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idEstado\": {{estadoId}}\n}"
+            },
+            "url": "{{baseUrl}}/api/compra/{{compraId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Cleanup (opcionales)",
+      "item": [
+        {
+          "name": "DELETE /api/carrito/items/:itemId",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/carrito/items/{{itemId}}"
+          }
+        },
+        {
+          "name": "DELETE /api/carrito/:id",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/carrito/{{carritoId}}"
+          }
+        }
+      ]
+    }
+  ]
+}
