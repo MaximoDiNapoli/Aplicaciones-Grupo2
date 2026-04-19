@@ -11,6 +11,8 @@ public interface EstadoService {
 
 	Estado obtenerPorId(Integer id);
 
+	Estado crear(EstadoRequest request);
+
 	Estado actualizar(Integer id, EstadoRequest request);
 
 	void eliminar(Integer id);

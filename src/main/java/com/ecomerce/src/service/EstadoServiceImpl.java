@@ -30,6 +30,12 @@ public class EstadoServiceImpl implements EstadoService {
 	}
 
 	@Override
+	public Estado crear(EstadoRequest request) {
+		Estado estado = new Estado(request.getNombre(), request.getDescripcion());
+		return estadoRepository.save(estado);
+	}
+
+	@Override
 	public Estado actualizar(Integer id, EstadoRequest request) {
 		Estado estado = obtenerPorId(id);
 		estado.setNombre(request.getNombre());

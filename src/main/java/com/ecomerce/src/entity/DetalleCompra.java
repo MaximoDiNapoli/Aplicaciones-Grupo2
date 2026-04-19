@@ -7,7 +7,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "DetalleCompra")
+@Table(name = "`DetalleCompra`")
 public class DetalleCompra extends BaseEntity {
 
 	@Column(name = "id_compra", nullable = false)
