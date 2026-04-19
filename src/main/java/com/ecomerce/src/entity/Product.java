@@ -3,8 +3,13 @@ package com.ecomerce.src.entity;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.Lob;
 import jakarta.persistence.Table;
 
 @Entity
@@ -29,8 +34,10 @@ public class Product extends BaseEntity {
 	@Column(nullable = false)
 	private Integer stock;
 
-	@Column(name = "imagen_url")
-	private String imagenUrl;
+	@Lob
+	@Basic(fetch = FetchType.LAZY)
+	@JsonIgnore
+	private byte[] foto;
 
 	@Column(nullable = false)
 	private Boolean activo;
@@ -89,12 +96,12 @@ public class Product extends BaseEntity {
 		this.stock = stock;
 	}
 
-	public String getImagenUrl() {
-		return imagenUrl;
+	public byte[] getFoto() {
+		return foto;
 	}
 
-	public void setImagenUrl(String imagenUrl) {
-		this.imagenUrl = imagenUrl;
+	public void setFoto(byte[] foto) {
+		this.foto = foto;
 	}
 
 	public Boolean getActivo() {

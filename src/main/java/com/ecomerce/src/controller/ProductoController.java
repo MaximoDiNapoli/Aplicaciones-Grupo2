@@ -4,7 +4,9 @@ import java.math.BigDecimal;
 import java.net.URI;
 import java.util.List;
 
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.ecomerce.src.dto.ProductRequest;
 import com.ecomerce.src.entity.Product;
@@ -48,20 +52,72 @@ public class ProductoController {
 		return ResponseEntity.ok(productService.obtenerPorId(id));
 	}
 
-	@PostMapping
+	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Product> crear(@Valid @RequestBody ProductRequest request) {
 		Product creado = productService.crear(request);
 		return ResponseEntity.created(URI.create("/api/productos/" + creado.getId())).body(creado);
 	}
 
-	@PutMapping("/{id}")
+	@PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	public ResponseEntity<Product> crearConImagen(
+			@RequestParam Integer usuarioId,
+			@RequestParam(required = false) Integer categoriaId,
+			@RequestParam String nombre,
+			@RequestParam BigDecimal precio,
+			@RequestParam(required = false) String descripcion,
+			@RequestParam Integer stock,
+			@RequestParam(value = "image", required = false) MultipartFile image) {
+		ProductRequest request = buildProductRequest(usuarioId, categoriaId, nombre, precio, descripcion, stock);
+		Product creado = productService.crear(request, image);
+
+		return ResponseEntity.created(URI.create("/api/productos/" + creado.getId())).body(creado);
+	}
+
+	@PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Product> actualizar(@PathVariable Integer id, @Valid @RequestBody ProductRequest request) {
 		return ResponseEntity.ok(productService.actualizar(id, request));
+	}
+
+	@PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	public ResponseEntity<Product> actualizarConImagen(
+			@PathVariable Integer id,
+			@RequestParam Integer usuarioId,
+			@RequestParam(required = false) Integer categoriaId,
+			@RequestParam String nombre,
+			@RequestParam BigDecimal precio,
+			@RequestParam(required = false) String descripcion,
+			@RequestParam Integer stock,
+			@RequestParam(value = "image", required = false) MultipartFile image) {
+		ProductRequest request = buildProductRequest(usuarioId, categoriaId, nombre, precio, descripcion, stock);
+		Product actualizado = productService.actualizar(id, request, image);
+
+		return ResponseEntity.ok(actualizado);
 	}
 
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> eliminarLogico(@PathVariable Integer id) {
 		productService.eliminarLogico(id);
 		return ResponseEntity.noContent().build();
+	}
+
+	private ProductRequest buildProductRequest(
+			Integer usuarioId,
+			Integer categoriaId,
+			String nombre,
+			BigDecimal precio,
+			String descripcion,
+			Integer stock) {
+		if (nombre == null || nombre.isBlank()) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El nombre es obligatorio");
+		}
+
+		ProductRequest request = new ProductRequest();
+		request.setUsuarioId(usuarioId);
+		request.setCategoriaId(categoriaId);
+		request.setNombre(nombre);
+		request.setPrecio(precio);
+		request.setDescripcion(descripcion);
+		request.setStock(stock);
+		return request;
 	}
 }

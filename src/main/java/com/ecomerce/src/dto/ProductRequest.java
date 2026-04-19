@@ -30,9 +30,6 @@ public class ProductRequest {
 	@Min(0)
 	private Integer stock;
 
-	@Size(max = 255)
-	private String imagenUrl;
-
 	public Integer getUsuarioId() {
 		return usuarioId;
 	}
@@ -79,13 +76,5 @@ public class ProductRequest {
 
 	public void setStock(Integer stock) {
 		this.stock = stock;
-	}
-
-	public String getImagenUrl() {
-		return imagenUrl;
-	}
-
-	public void setImagenUrl(String imagenUrl) {
-		this.imagenUrl = imagenUrl;
 	}
 }

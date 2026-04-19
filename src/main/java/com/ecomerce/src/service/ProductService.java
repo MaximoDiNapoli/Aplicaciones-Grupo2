@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.ecomerce.src.dto.ProductRequest;
 import com.ecomerce.src.entity.Product;
+import org.springframework.web.multipart.MultipartFile;
 
 public interface ProductService {
 
@@ -14,7 +15,11 @@ public interface ProductService {
 
 	Product crear(ProductRequest request);
 
+	Product crear(ProductRequest request, MultipartFile image);
+
 	Product actualizar(Integer id, ProductRequest request);
+
+	Product actualizar(Integer id, ProductRequest request, MultipartFile image);
 
 	void eliminarLogico(Integer id);
 }
