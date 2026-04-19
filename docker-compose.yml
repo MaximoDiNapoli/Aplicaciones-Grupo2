@@ -10,11 +10,13 @@ services:
       MYSQL_ROOT_PASSWORD: root123
     ports:
       - "3306:3306"
-    command: --default-authentication-plugin=mysql_native_password
+    command: --default-authentication-plugin=mysql_native_password --lower_case_table_names=1
     volumes:
       - mysql_data:/var/lib/mysql
-      - ./bdd:/docker-initdb:ro
-      - ./bdd/run-init.sh:/docker-entrypoint-initdb.d/00-run-bdd.sh:ro
+      - ./bdd/v1.sql:/docker-entrypoint-initdb.d/v1.sql:ro
+      - ./bdd/v2.sql:/docker-entrypoint-initdb.d/v2.sql:ro
+      - ./bdd/v3.sql:/docker-entrypoint-initdb.d/v3.sql:ro
+      - ./bdd/v4.sql:/docker-entrypoint-initdb.d/v4.sql:ro
 
 volumes:
   mysql_data:
