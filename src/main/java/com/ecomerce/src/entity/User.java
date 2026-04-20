@@ -1,10 +1,12 @@
 package com.ecomerce.src.entity;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.time.LocalDateTime;
 
 @Data
+@EqualsAndHashCode(callSuper = false)
 @Entity
 @Table(name = "Usuario")
 public class User extends BaseEntity{

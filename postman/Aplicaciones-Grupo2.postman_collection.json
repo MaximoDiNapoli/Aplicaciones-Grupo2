@@ -5,8 +5,18 @@
     "description": "Coleccion completa para probar la API de Aplicaciones-Grupo2.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      { "key": "token", "value": "{{accessToken}}", "type": "string" }
+    ]
+  },
   "variable": [
     { "key": "baseUrl", "value": "http://127.0.0.1:8080" },
+    { "key": "authNombre", "value": "Postman Usuario" },
+    { "key": "authEmail", "value": "postman.user@example.com" },
+    { "key": "authPassword", "value": "password123" },
+    { "key": "accessToken", "value": "" },
     { "key": "usuarioId", "value": "1" },
     { "key": "metodoPagoId", "value": "1" },
     { "key": "direccionEnvioId", "value": "1" },
@@ -29,8 +39,286 @@
         {
           "name": "GET /api/health",
           "request": {
+            "auth": {
+              "type": "noauth"
+            },
             "method": "GET",
             "url": "{{baseUrl}}/api/health"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "POST /api/auth/register",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const uniqueEmail = 'postman.user+' + Date.now() + '@example.com';",
+                  "pm.collectionVariables.set('authEmail', uniqueEmail);"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', function () { pm.response.to.have.status(200); });",
+                  "const data = pm.response.json();",
+                  "pm.collectionVariables.set('accessToken', data.accessToken);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"{{authNombre}}\",\n  \"email\": \"{{authEmail}}\",\n  \"password\": \"{{authPassword}}\",\n  \"telefono\": \"111111\"\n}"
+            },
+            "url": "{{baseUrl}}/api/auth/register"
+          }
+        },
+        {
+          "name": "POST /api/auth/login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', function () { pm.response.to.have.status(200); });",
+                  "const data = pm.response.json();",
+                  "pm.collectionVariables.set('accessToken', data.accessToken);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{authEmail}}\",\n  \"password\": \"{{authPassword}}\"\n}"
+            },
+            "url": "{{baseUrl}}/api/auth/login"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Security checks",
+      "item": [
+        {
+          "name": "GET /api/categorias (sin token => 403)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 403', function () { pm.response.to.have.status(403); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "url": "{{baseUrl}}/api/categorias"
+          }
+        },
+        {
+          "name": "GET /api/estados (sin token => 403)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 403', function () { pm.response.to.have.status(403); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "url": "{{baseUrl}}/api/estados"
+          }
+        },
+        {
+          "name": "GET /api/productos (sin token => 403)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 403', function () { pm.response.to.have.status(403); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "url": "{{baseUrl}}/api/productos"
+          }
+        },
+        {
+          "name": "GET /api/carrito (sin token => 403)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 403', function () { pm.response.to.have.status(403); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "url": "{{baseUrl}}/api/carrito"
+          }
+        },
+        {
+          "name": "GET /api/compras/1 (sin token => 403)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 403', function () { pm.response.to.have.status(403); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "url": "{{baseUrl}}/api/compras/1"
+          }
+        },
+        {
+          "name": "GET /api/categorias (con token => 200)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/categorias"
+          }
+        },
+        {
+          "name": "GET /api/estados (con token => 200)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/estados"
+          }
+        },
+        {
+          "name": "GET /api/productos (con token => 200)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/productos"
+          }
+        },
+        {
+          "name": "GET /api/carrito (con token => 200)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/carrito"
+          }
+        },
+        {
+          "name": "GET /api/usuarios/:id/compras (con token => 200)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/usuarios/{{usuarioId}}/compras"
           }
         }
       ]
@@ -244,7 +532,7 @@
       "name": "Productos",
       "item": [
         {
-          "name": "POST /api/productos (JSON producto 1)",
+          "name": "POST /api/productos (multipart producto 1, sin foto)",
           "event": [
             {
               "listen": "test",
@@ -259,18 +547,23 @@
           ],
           "request": {
             "method": "POST",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" }
-            ],
             "body": {
-              "mode": "raw",
-              "raw": "{\n  \"usuarioId\": {{usuarioId}},\n  \"categoriaId\": {{categoriaAId}},\n  \"nombre\": \"Postman Producto 1\",\n  \"precio\": 25.50,\n  \"descripcion\": \"Producto de prueba 1\",\n  \"stock\": 4\n}"
+              "mode": "formdata",
+              "formdata": [
+                { "key": "usuarioId", "value": "{{usuarioId}}", "type": "text" },
+                { "key": "categoriaId", "value": "{{categoriaAId}}", "type": "text" },
+                { "key": "nombre", "value": "Postman Producto 1", "type": "text" },
+                { "key": "precio", "value": "25.50", "type": "text" },
+                { "key": "descripcion", "value": "Producto de prueba 1", "type": "text" },
+                { "key": "stock", "value": "4", "type": "text" },
+                { "key": "descuentoPorcentaje", "value": "10", "type": "text" }
+              ]
             },
             "url": "{{baseUrl}}/api/productos"
           }
         },
         {
-          "name": "POST /api/productos (JSON producto 2)",
+          "name": "POST /api/productos (multipart producto 2, sin foto)",
           "event": [
             {
               "listen": "test",
@@ -285,12 +578,17 @@
           ],
           "request": {
             "method": "POST",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" }
-            ],
             "body": {
-              "mode": "raw",
-              "raw": "{\n  \"usuarioId\": {{usuarioId}},\n  \"categoriaId\": {{categoriaBId}},\n  \"nombre\": \"Postman Producto 2\",\n  \"precio\": 12.00,\n  \"descripcion\": \"Producto de prueba 2\",\n  \"stock\": 6\n}"
+              "mode": "formdata",
+              "formdata": [
+                { "key": "usuarioId", "value": "{{usuarioId}}", "type": "text" },
+                { "key": "categoriaId", "value": "{{categoriaBId}}", "type": "text" },
+                { "key": "nombre", "value": "Postman Producto 2", "type": "text" },
+                { "key": "precio", "value": "12.00", "type": "text" },
+                { "key": "descripcion", "value": "Producto de prueba 2", "type": "text" },
+                { "key": "stock", "value": "6", "type": "text" },
+                { "key": "descuentoPorcentaje", "value": "0", "type": "text" }
+              ]
             },
             "url": "{{baseUrl}}/api/productos"
           }
@@ -320,6 +618,7 @@
                 { "key": "precio", "value": "35.00", "type": "text" },
                 { "key": "descripcion", "value": "Producto multipart", "type": "text" },
                 { "key": "stock", "value": "8", "type": "text" },
+                { "key": "descuentoPorcentaje", "value": "15", "type": "text" },
                 { "key": "image", "type": "file", "src": "" }
               ]
             },
@@ -377,7 +676,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"usuarioId\": {{usuarioId}},\n  \"categoriaId\": {{categoriaAId}},\n  \"nombre\": \"Postman Producto 1 Actualizado\",\n  \"precio\": 27.00,\n  \"descripcion\": \"Producto 1 actualizado\",\n  \"stock\": 5\n}"
+              "raw": "{\n  \"usuarioId\": {{usuarioId}},\n  \"categoriaId\": {{categoriaAId}},\n  \"nombre\": \"Postman Producto 1 Actualizado\",\n  \"precio\": 27.00,\n  \"descripcion\": \"Producto 1 actualizado\",\n  \"stock\": 5,\n  \"descuentoPorcentaje\": 5\n}"
             },
             "url": "{{baseUrl}}/api/productos/{{producto1Id}}"
           }
@@ -395,6 +694,7 @@
                 { "key": "precio", "value": "39.90", "type": "text" },
                 { "key": "descripcion", "value": "Producto multipart actualizado", "type": "text" },
                 { "key": "stock", "value": "9", "type": "text" },
+                { "key": "descuentoPorcentaje", "value": "20", "type": "text" },
                 { "key": "image", "type": "file", "src": "" }
               ]
             },
@@ -434,7 +734,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"nombre\": \"Carrito flujo Postman\",\n  \"descripcion\": \"Carrito para compra\"\n}"
+              "raw": "{\n  \"usuarioId\": {{usuarioId}},\n  \"nombre\": \"Carrito flujo Postman\",\n  \"descripcion\": \"Carrito para compra\"\n}"
             },
             "url": "{{baseUrl}}/api/carrito"
           }
@@ -462,13 +762,13 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"nombre\": \"Carrito flujo Postman actualizado\",\n  \"descripcion\": \"Editado\"\n}"
+              "raw": "{\n  \"usuarioId\": {{usuarioId}},\n  \"nombre\": \"Carrito flujo Postman actualizado\",\n  \"descripcion\": \"Editado\"\n}"
             },
             "url": "{{baseUrl}}/api/carrito/{{carritoId}}"
           }
         },
         {
-          "name": "POST /api/carrito/items (item 1)",
+          "name": "POST /api/carrito/:idCarrito/items (item 1)",
           "event": [
             {
               "listen": "test",
@@ -488,13 +788,13 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"idCarrito\": {{carritoId}},\n  \"idProducto\": {{producto1Id}},\n  \"cantidad\": 2,\n  \"precioUnitario\": 27.00\n}"
+              "raw": "{\n  \"idProducto\": {{producto1Id}},\n  \"cantidad\": 2,\n  \"precioUnitario\": 27.00\n}"
             },
-            "url": "{{baseUrl}}/api/carrito/items"
+            "url": "{{baseUrl}}/api/carrito/{{carritoId}}/items"
           }
         },
         {
-          "name": "POST /api/carrito/items (item 2)",
+          "name": "POST /api/carrito/:idCarrito/items (item 2)",
           "request": {
             "method": "POST",
             "header": [
@@ -502,9 +802,9 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"idCarrito\": {{carritoId}},\n  \"idProducto\": {{producto3Id}},\n  \"cantidad\": 1,\n  \"precioUnitario\": 39.90\n}"
+              "raw": "{\n  \"idProducto\": {{producto3Id}},\n  \"cantidad\": 1,\n  \"precioUnitario\": 39.90\n}"
             },
-            "url": "{{baseUrl}}/api/carrito/items"
+            "url": "{{baseUrl}}/api/carrito/{{carritoId}}/items"
           }
         },
         {
@@ -515,7 +815,7 @@
           }
         },
         {
-          "name": "PUT /api/carrito/:id/items/:itemId",
+          "name": "PUT /api/carrito/items/:itemId",
           "request": {
             "method": "PUT",
             "header": [
@@ -523,9 +823,9 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"idCarrito\": {{carritoId}},\n  \"idProducto\": {{producto1Id}},\n  \"cantidad\": 3,\n  \"precioUnitario\": 27.00\n}"
+              "raw": "{\n  \"idProducto\": {{producto1Id}},\n  \"cantidad\": 3,\n  \"precioUnitario\": 27.00\n}"
             },
-            "url": "{{baseUrl}}/api/carrito/{{carritoId}}/items/{{itemId}}"
+            "url": "{{baseUrl}}/api/carrito/items/{{itemId}}"
           }
         }
       ]
@@ -560,17 +860,17 @@
           }
         },
         {
-          "name": "GET /api/compras/:idUsuario",
+          "name": "GET /api/usuarios/:idUsuario/compras",
           "request": {
             "method": "GET",
-            "url": "{{baseUrl}}/api/compras/{{usuarioId}}"
+            "url": "{{baseUrl}}/api/usuarios/{{usuarioId}}/compras"
           }
         },
         {
-          "name": "GET /api/compra/:id",
+          "name": "GET /api/compras/:id",
           "request": {
             "method": "GET",
-            "url": "{{baseUrl}}/api/compra/{{compraId}}"
+            "url": "{{baseUrl}}/api/compras/{{compraId}}"
           }
         },
         {
@@ -581,7 +881,7 @@
           }
         },
         {
-          "name": "PUT /api/compra/:id",
+          "name": "PUT /api/compras/:id",
           "request": {
             "method": "PUT",
             "header": [
@@ -591,7 +891,7 @@
               "mode": "raw",
               "raw": "{\n  \"idEstado\": {{estadoId}}\n}"
             },
-            "url": "{{baseUrl}}/api/compra/{{compraId}}"
+            "url": "{{baseUrl}}/api/compras/{{compraId}}"
           }
         }
       ]

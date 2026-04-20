@@ -2,7 +2,9 @@ package com.ecomerce.src.controller;
 
 import com.ecomerce.src.dto.UserRequest;
 import com.ecomerce.src.dto.UserResponse;
+import com.ecomerce.src.entity.Carrito;
 import com.ecomerce.src.entity.Compra;
+import com.ecomerce.src.service.CarritoService;
 import com.ecomerce.src.service.CompraService;
 import com.ecomerce.src.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,9 @@ public class UsuarioController {
 
     @Autowired
     private CompraService compraService;
+
+    @Autowired
+    private CarritoService carritoService;
 
     @GetMapping
     public ResponseEntity<List<UserResponse>> getUsers(
@@ -64,9 +69,9 @@ public class UsuarioController {
     }
 
     @GetMapping("/{id}/carrito")
-    public ResponseEntity<?> getUserCarrito(@PathVariable Long id) {
-        // Lógica para traer el carrito actual
-        return ResponseEntity.ok("Carrito del usuario " + id);
+    public ResponseEntity<List<Carrito>> getUserCarrito(@PathVariable Integer id) {
+        this.userService.getUserById(id);
+        return ResponseEntity.ok(this.carritoService.listarPorUsuario(id));
     }
 
     @GetMapping("/{id}/direcciones")

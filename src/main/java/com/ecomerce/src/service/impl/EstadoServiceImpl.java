@@ -1,4 +1,4 @@
-package com.ecomerce.src.service;
+package com.ecomerce.src.service.impl;
 
 import java.util.List;
 
@@ -8,6 +8,7 @@ import com.ecomerce.src.dto.EstadoRequest;
 import com.ecomerce.src.entity.Estado;
 import com.ecomerce.src.exception.ResourceNotFoundException;
 import com.ecomerce.src.repository.EstadoRepository;
+import com.ecomerce.src.service.EstadoService;
 
 @Service
 public class EstadoServiceImpl implements EstadoService {

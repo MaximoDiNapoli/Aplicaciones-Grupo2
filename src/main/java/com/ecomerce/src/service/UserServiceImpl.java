@@ -15,6 +15,7 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
 
+    @Override
     public List<UserResponse> getUsers(String rol, String ciudad, String codigopostal) {
         List<User> usersFound;
 
@@ -27,11 +28,13 @@ public class UserServiceImpl implements UserService {
         return usersFound.stream().map(usuario -> new UserResponse(usuario.getId(), usuario.getNombre(), usuario.getEmail(), usuario.getTelefono(), usuario.getRol(), usuario.getCreatedAt())).collect(Collectors.toList());
     }
 
+    @Override
     public UserResponse getUserById(Integer id) {
         User usuario = this.userRepository.findById(id).orElseThrow(() -> new RuntimeException("Usuario con ID " + id + " no encontrado"));
         return this.crearResponseDTO(usuario);// new UsuarioResponseDTO(usuario.getId(), usuario.getNombre(), usuario.getEmail(), usuario.getTelefono(), usuario.getRol(), usuario.getCreatedAt());
     }
 
+    @Override
     public UserResponse updateUser(Integer id, UserRequest userDetails) {
         User usuario = this.userRepository.findById(id).orElseThrow(() -> new RuntimeException("Usuario con ID " + id + " no existe, no se puede actualizar."));
 
@@ -45,6 +48,7 @@ public class UserServiceImpl implements UserService {
         return this.crearResponseDTO(usuarioUpdated);
     }
 
+    @Override
     public void deleteUser(Integer id) {
         if (!userRepository.existsById(id)) {
             throw new RuntimeException("No se puede borrar: Usuario no encontrado");

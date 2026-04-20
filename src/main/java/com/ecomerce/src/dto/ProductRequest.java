@@ -1,7 +1,9 @@
 package com.ecomerce.src.dto;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
+import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -29,6 +31,14 @@ public class ProductRequest {
 	@NotNull
 	@Min(0)
 	private Integer stock;
+
+	@DecimalMin(value = "0.0", inclusive = true)
+	@DecimalMax(value = "100.0", inclusive = true)
+	private BigDecimal descuentoPorcentaje;
+
+	private LocalDateTime descuentoInicio;
+
+	private LocalDateTime descuentoFin;
 
 	public Integer getUsuarioId() {
 		return usuarioId;
@@ -76,5 +86,29 @@ public class ProductRequest {
 
 	public void setStock(Integer stock) {
 		this.stock = stock;
+	}
+
+	public BigDecimal getDescuentoPorcentaje() {
+		return descuentoPorcentaje;
+	}
+
+	public void setDescuentoPorcentaje(BigDecimal descuentoPorcentaje) {
+		this.descuentoPorcentaje = descuentoPorcentaje;
+	}
+
+	public LocalDateTime getDescuentoInicio() {
+		return descuentoInicio;
+	}
+
+	public void setDescuentoInicio(LocalDateTime descuentoInicio) {
+		this.descuentoInicio = descuentoInicio;
+	}
+
+	public LocalDateTime getDescuentoFin() {
+		return descuentoFin;
+	}
+
+	public void setDescuentoFin(LocalDateTime descuentoFin) {
+		this.descuentoFin = descuentoFin;
 	}
 }

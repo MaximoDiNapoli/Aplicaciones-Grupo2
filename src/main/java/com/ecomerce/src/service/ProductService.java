@@ -13,8 +13,6 @@ public interface ProductService {
 
 	Product obtenerPorId(Integer id);
 
-	Product crear(ProductRequest request);
-
 	Product crear(ProductRequest request, MultipartFile image);
 
 	Product actualizar(Integer id, ProductRequest request);

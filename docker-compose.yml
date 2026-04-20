@@ -17,6 +17,7 @@ services:
       - ./bdd/v2.sql:/docker-entrypoint-initdb.d/v2.sql:ro
       - ./bdd/v3.sql:/docker-entrypoint-initdb.d/v3.sql:ro
       - ./bdd/v4.sql:/docker-entrypoint-initdb.d/v4.sql:ro
-
+      - ./bdd/v5.sql:/docker-entrypoint-initdb.d/v5.sql:ro
+      - ./bdd/v6.sql:/docker-entrypoint-initdb.d/v6.sql:ro
 volumes:
   mysql_data:

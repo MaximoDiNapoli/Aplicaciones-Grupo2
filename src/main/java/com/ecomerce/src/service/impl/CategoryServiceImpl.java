@@ -1,4 +1,4 @@
-package com.ecomerce.src.service;
+package com.ecomerce.src.service.impl;
 
 import java.util.List;
 
@@ -8,6 +8,7 @@ import com.ecomerce.src.dto.CategoryRequest;
 import com.ecomerce.src.entity.Category;
 import com.ecomerce.src.exception.ResourceNotFoundException;
 import com.ecomerce.src.repository.CategoryRepository;
+import com.ecomerce.src.service.CategoryService;
 
 @Service
 public class CategoryServiceImpl implements CategoryService {

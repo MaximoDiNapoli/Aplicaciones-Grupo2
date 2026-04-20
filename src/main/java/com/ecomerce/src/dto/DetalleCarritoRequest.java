@@ -7,7 +7,6 @@ import jakarta.validation.constraints.NotNull;
 
 public class DetalleCarritoRequest {
 
-	@NotNull(message = "El ID del carrito no puede ser nulo")
 	private Integer idCarrito;
 
 	@NotNull(message = "El ID del producto no puede ser nulo")

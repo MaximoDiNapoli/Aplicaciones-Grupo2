@@ -36,14 +36,17 @@ public class DetalleCarritoController {
 		return ResponseEntity.ok(detalleCarritoService.obtenerItemsPorCarrito(idCarrito));
 	}
 
-	@PostMapping("/items")
-	public ResponseEntity<DetalleCarrito> crearItem(@Valid @RequestBody DetalleCarritoRequest request) {
+	@PostMapping("/{idCarrito}/items")
+	public ResponseEntity<DetalleCarrito> crearItem(
+			@PathVariable Integer idCarrito,
+			@Valid @RequestBody DetalleCarritoRequest request) {
+		request.setIdCarrito(idCarrito);
 		DetalleCarrito creado = detalleCarritoService.crear(request);
 		return ResponseEntity.created(URI.create("/api/carrito/items/" + creado.getId())).body(creado);
 	}
 
-	@PutMapping("/{idCarrito}/items/{idItem}")
-	public ResponseEntity<DetalleCarrito> actualizarItem(@PathVariable Integer idCarrito, @PathVariable Integer idItem,
+	@PutMapping("/items/{idItem}")
+	public ResponseEntity<DetalleCarrito> actualizarItem(@PathVariable Integer idItem,
 			@Valid @RequestBody DetalleCarritoRequest request) {
 		return ResponseEntity.ok(detalleCarritoService.actualizar(idItem, request));
 	}

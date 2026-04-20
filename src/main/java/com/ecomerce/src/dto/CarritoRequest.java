@@ -5,12 +5,22 @@ import jakarta.validation.constraints.Size;
 
 public class CarritoRequest {
 
+	private Integer usuarioId;
+
 	@NotBlank
 	@Size(max = 255)
 	private String nombre;
 
 	@Size(max = 2000)
 	private String descripcion;
+
+	public Integer getUsuarioId() {
+		return usuarioId;
+	}
+
+	public void setUsuarioId(Integer usuarioId) {
+		this.usuarioId = usuarioId;
+	}
 
 	public String getNombre() {
 		return nombre;
