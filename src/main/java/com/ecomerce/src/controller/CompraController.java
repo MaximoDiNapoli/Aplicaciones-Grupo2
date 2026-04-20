@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -60,5 +61,11 @@ public class CompraController {
 	@GetMapping("/compras/{id}/detalle")
 	public ResponseEntity<List<DetalleCompra>> obtenerDetalle(@PathVariable Integer id) {
 		return ResponseEntity.ok(compraService.obtenerDetalle(id));
+	}
+
+	@DeleteMapping("/compras/{id}")
+	public ResponseEntity<Void> eliminar(@PathVariable Integer id) {
+		compraService.eliminar(id);
+		return ResponseEntity.noContent().build();
 	}
 }

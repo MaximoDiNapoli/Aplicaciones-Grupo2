@@ -1,12 +1,14 @@
-package com.ecomerce.src.service;
+package com.ecomerce.src.service.impl;
 
 import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.ecomerce.src.dto.MetodoPagoRequest;
 import com.ecomerce.src.entity.MetodoPago;
 import com.ecomerce.src.exception.ResourceNotFoundException;
 import com.ecomerce.src.repository.MetodoPagoRepository;
+import com.ecomerce.src.service.MetodoPagoService;
 
 @Service
 public class MetodoPagoServiceImpl implements MetodoPagoService {
@@ -30,7 +32,6 @@ public class MetodoPagoServiceImpl implements MetodoPagoService {
 
     @Override
     public MetodoPago crear(MetodoPagoRequest request) {
-        // Asumiendo que MetodoPago tiene un constructor similar al de Carrito
         MetodoPago metodoPago = new MetodoPago(request.getTipo(), request.getDescripcion());
         return metodoPagoRepository.save(metodoPago);
     }

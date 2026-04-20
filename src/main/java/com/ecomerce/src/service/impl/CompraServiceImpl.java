@@ -95,4 +95,10 @@ public class CompraServiceImpl implements CompraService {
 		obtenerPorId(idCompra);
 		return detalleCompraRepository.findByIdCompra(idCompra);
 	}
+
+	@Override
+	public void eliminar(Integer id) {
+		Compra compra = obtenerPorId(id);
+		compraRepository.delete(compra);
+	}
 }

@@ -2,8 +2,13 @@ package com.ecomerce.src.entity;
 
 import java.math.BigDecimal;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -13,8 +18,18 @@ public class DetalleCompra extends BaseEntity {
 	@Column(name = "id_compra", nullable = false)
 	private Integer idCompra;
 
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "id_compra", insertable = false, updatable = false)
+	@JsonIgnore
+	private Compra compra;
+
 	@Column(name = "id_producto", nullable = false)
 	private Integer idProducto;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "id_producto", insertable = false, updatable = false)
+	@JsonIgnore
+	private Product producto;
 
 	@Column(nullable = false)
 	private Integer cantidad;
@@ -36,12 +51,28 @@ public class DetalleCompra extends BaseEntity {
 		this.idCompra = idCompra;
 	}
 
+	public Compra getCompra() {
+		return compra;
+	}
+
+	public void setCompra(Compra compra) {
+		this.compra = compra;
+	}
+
 	public Integer getIdProducto() {
 		return idProducto;
 	}
 
 	public void setIdProducto(Integer idProducto) {
 		this.idProducto = idProducto;
+	}
+
+	public Product getProducto() {
+		return producto;
+	}
+
+	public void setProducto(Product producto) {
+		this.producto = producto;
 	}
 
 	public Integer getCantidad() {
