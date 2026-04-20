@@ -2,6 +2,8 @@ package com.ecomerce.src.controller;
 
 import com.ecomerce.src.dto.UserRequest;
 import com.ecomerce.src.dto.UserResponse;
+import com.ecomerce.src.entity.Compra;
+import com.ecomerce.src.service.CompraService;
 import com.ecomerce.src.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +18,9 @@ public class UsuarioController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private CompraService compraService;
+
     @GetMapping
     public ResponseEntity<List<UserResponse>> getUsers(
         @RequestParam(required=false) String rol,
@@ -28,21 +33,21 @@ public class UsuarioController {
 
     // GET /api/users/{id}
     @GetMapping("/{id}")
-    public ResponseEntity<UserResponse> getUserById(@PathVariable Long id) {
+    public ResponseEntity<UserResponse> getUserById(@PathVariable Integer id) {
         UserResponse user = this.userService.getUserById(id);
         return ResponseEntity.ok(user);
     }
 
     // PUT /api/users/{id}
     @PutMapping("/{id}")
-    public ResponseEntity<UserResponse> updateUser(@PathVariable Long id, @RequestBody UserRequest userDetails) {
+    public ResponseEntity<UserResponse> updateUser(@PathVariable Integer id, @RequestBody UserRequest userDetails) {
         UserResponse usuarioUpdated = this.userService.updateUser(id, userDetails);
         return ResponseEntity.ok(usuarioUpdated);
     }
 
     // DELETE /api/users/{id}
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteUser(@PathVariable Integer id) {
         this.userService.deleteUser(id);
         return ResponseEntity.noContent().build();
     }
@@ -50,9 +55,12 @@ public class UsuarioController {
     // --- Endpoints de Relaciones ---
 
     @GetMapping("/{id}/compras")
-    public ResponseEntity<?> getUserCompras(@PathVariable Long id) {
+    public ResponseEntity<?> getUserCompras(@PathVariable Integer id) {
         // Lógica para traer compras del usuario
-        return ResponseEntity.ok("Lista de compras del usuario " + id);
+        this.userService.getUserById(id);
+
+        List<Compra> comprasPorUsuario = this.compraService.listarPorUsuario(id);
+        return ResponseEntity.ok(comprasPorUsuario);
     }
 
     @GetMapping("/{id}/carrito")

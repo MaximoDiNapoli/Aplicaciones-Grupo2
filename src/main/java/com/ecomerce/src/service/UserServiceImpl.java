@@ -27,12 +27,12 @@ public class UserServiceImpl implements UserService {
         return usersFound.stream().map(usuario -> new UserResponse(usuario.getId(), usuario.getNombre(), usuario.getEmail(), usuario.getTelefono(), usuario.getRol(), usuario.getCreatedAt())).collect(Collectors.toList());
     }
 
-    public UserResponse getUserById(Long id) {
+    public UserResponse getUserById(Integer id) {
         User usuario = this.userRepository.findById(id).orElseThrow(() -> new RuntimeException("Usuario con ID " + id + " no encontrado"));
         return this.crearResponseDTO(usuario);// new UsuarioResponseDTO(usuario.getId(), usuario.getNombre(), usuario.getEmail(), usuario.getTelefono(), usuario.getRol(), usuario.getCreatedAt());
     }
 
-    public UserResponse updateUser(Long id, UserRequest userDetails) {
+    public UserResponse updateUser(Integer id, UserRequest userDetails) {
         User usuario = this.userRepository.findById(id).orElseThrow(() -> new RuntimeException("Usuario con ID " + id + " no existe, no se puede actualizar."));
 
         if(userDetails.getNombre() != null) usuario.setNombre(userDetails.getNombre());
@@ -45,7 +45,7 @@ public class UserServiceImpl implements UserService {
         return this.crearResponseDTO(usuarioUpdated);
     }
 
-    public void deleteUser(Long id) {
+    public void deleteUser(Integer id) {
         if (!userRepository.existsById(id)) {
             throw new RuntimeException("No se puede borrar: Usuario no encontrado");
         }
