@@ -59,3 +59,11 @@ SET @sql := IF(
 PREPARE stmt FROM @sql;
 EXECUTE stmt;
 DEALLOCATE PREPARE stmt;
+
+-- Insertar datos de prueba para metodopago
+INSERT INTO metodopago (tipo, descripcion) VALUES
+('Tarjeta de Crédito', 'Pago con tarjeta de crédito Visa, Mastercard, etc.'),
+('Tarjeta de Débito', 'Pago con tarjeta de débito'),
+('Transferencia Bancaria', 'Pago mediante transferencia bancaria'),
+('PayPal', 'Pago a través de PayPal'),
+('Efectivo', 'Pago en efectivo al momento de la entrega');
