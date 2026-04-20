@@ -1,4 +1,4 @@
-package com.ecomerce.src.service;
+package com.ecomerce.src.service.impl;
 
 import java.util.List;
 
@@ -12,6 +12,7 @@ import com.ecomerce.src.exception.ResourceNotFoundException;
 import com.ecomerce.src.repository.CarritoRepository;
 import com.ecomerce.src.repository.DetalleCarritoRepository;
 import com.ecomerce.src.repository.ProductRepository;
+import com.ecomerce.src.service.DetalleCarritoService;
 
 @Service
 public class DetalleCarritoServiceImpl implements DetalleCarritoService {
@@ -60,7 +61,7 @@ public class DetalleCarritoServiceImpl implements DetalleCarritoService {
 				.orElseThrow(() -> new ResourceNotFoundException("No existe el item del carrito con id " + idItem));
 
 		// Verificar que el carrito existe si se está actualizando
-		if (!detalleCarrito.getCarrito().getId().equals(request.getIdCarrito())) {
+		if (request.getIdCarrito() != null && !detalleCarrito.getCarrito().getId().equals(request.getIdCarrito())) {
 			carritoRepository.findById(request.getIdCarrito())
 					.orElseThrow(() -> new ResourceNotFoundException("No existe el carrito con id " + request.getIdCarrito()));
 			Carrito carrito = carritoRepository.findById(request.getIdCarrito()).get();

@@ -37,20 +37,20 @@ public class CompraController {
 			@PathVariable Integer idCarrito,
 			@Valid @RequestBody CompraRequest request) {
 		Compra creada = compraService.crearDesdeCarrito(idCarrito, request);
-		return ResponseEntity.created(URI.create("/api/compra/" + creada.getId())).body(creada);
+		return ResponseEntity.created(URI.create("/api/compras/" + creada.getId())).body(creada);
 	}
 
-	@GetMapping("/compras/{idUsuario}")
+	@GetMapping("/usuarios/{idUsuario}/compras")
 	public ResponseEntity<List<Compra>> listarPorUsuario(@PathVariable Integer idUsuario) {
 		return ResponseEntity.ok(compraService.listarPorUsuario(idUsuario));
 	}
 
-	@GetMapping("/compra/{id}")
+	@GetMapping("/compras/{id}")
 	public ResponseEntity<Compra> obtenerPorId(@PathVariable Integer id) {
 		return ResponseEntity.ok(compraService.obtenerPorId(id));
 	}
 
-	@PutMapping("/compra/{id}")
+	@PutMapping("/compras/{id}")
 	public ResponseEntity<Compra> actualizar(
 			@PathVariable Integer id,
 			@Valid @RequestBody CompraUpdateRequest request) {

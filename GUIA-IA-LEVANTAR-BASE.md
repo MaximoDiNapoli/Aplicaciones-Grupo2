@@ -33,6 +33,7 @@ Esta es la ruta mas util si quieres ver la base desde Workbench.
    - `bdd/v1.sql`
    - `bdd/v2.sql`
    - `bdd/v3.sql`
+   - `bdd/v4.sql`
 4. Arranca la aplicacion con Maven.
 
 Ejemplo en PowerShell:
@@ -42,6 +43,7 @@ Ejemplo en PowerShell:
 & 'C:\Program Files\MySQL\MySQL Server 8.4\bin\mysql.exe' --host=127.0.0.1 --port=3306 -uroot ecomerce_db < .\bdd\v1.sql
 & 'C:\Program Files\MySQL\MySQL Server 8.4\bin\mysql.exe' --host=127.0.0.1 --port=3306 -uroot ecomerce_db < .\bdd\v2.sql
 & 'C:\Program Files\MySQL\MySQL Server 8.4\bin\mysql.exe' --host=127.0.0.1 --port=3306 -uroot ecomerce_db < .\bdd\v3.sql
+& 'C:\Program Files\MySQL\MySQL Server 8.4\bin\mysql.exe' --host=127.0.0.1 --port=3306 -uroot ecomerce_db < .\bdd\v4.sql
 .\mvnw.cmd spring-boot:run
 ```
 
@@ -57,7 +59,8 @@ Si Docker funciona en el entorno, el `docker-compose.yml` levanta MySQL y ejecut
 
 - `bdd/v1.sql`: crea la estructura base.
 - `bdd/v2.sql`: agrega `id_usuario` a `Producto` y su llave foranea.
-- `bdd/v3.sql`: agrega el campo `foto` a `Producto`.
+- `bdd/v3.sql`: agrega el campo `foto` a `Producto` y elimina `imagen_url`.
+- `bdd/v4.sql`: ajusta `Carrito` y `DetalleCarrito` para los endpoints de carrito.
 
 ## Validacion rapida
 
@@ -88,6 +91,7 @@ En ese caso hay dos salidas:
 
 - No ejecutes `v2.sql` antes de `v1.sql`.
 - No saltes `v3.sql` si necesitas soporte de fotos.
+- No saltes `v4.sql` si usas los endpoints de carrito y detalle de carrito.
 - Si la app falla con validacion de esquema, revisa primero que la base ya tenga todas las tablas.
 - Si el puerto `8080` esta ocupado, detén el proceso Java anterior antes de volver a arrancar.
 - Si usas Workbench, evita `8.4.8` en el servidor y usa `8.0.x` para reducir errores de compatibilidad.
@@ -96,7 +100,108 @@ En ese caso hay dos salidas:
 
 1. Comprobar MySQL en `3306`.
 2. Crear `ecomerce_db` si hace falta.
-3. Aplicar `v1.sql`, `v2.sql` y `v3.sql` en ese orden.
+3. Aplicar `v1.sql`, `v2.sql`, `v3.sql` y `v4.sql` en ese orden.
 4. Arrancar la app con `mvnw.cmd spring-boot:run`.
 5. Confirmar que `GET /api/productos` responde.
 6. Confirmar que la base se ve desde Workbench.
+
+## Informe de pruebas
+
+Prueba ejecutada contra `http://127.0.0.1:8080` con MySQL 8.0.45 en `3306`.
+
+### Salud
+
+- `GET /api/health` -> `200`
+- Respuesta: `{"status":"UP"}`
+
+### Categorias
+
+- `POST /api/categorias` -> `201` para tres altas.
+- `GET /api/categorias` -> `200`, devolvio `2` registros al final de la corrida.
+- `GET /api/categorias/1` -> `200`.
+- `PUT /api/categorias/1` -> `200`.
+- `DELETE /api/categorias/3` -> `204`.
+- Estado final en base: `Electronica Actualizada` y `Hogar`.
+
+### Estados
+
+- `POST /api/estados` -> `201` para dos altas.
+- `GET /api/estados` -> `200`, devolvio `2` registros al final.
+- `PUT /api/estados/1` -> `200`.
+- `DELETE /api/estados/2` -> `204`.
+- Estado final en base: `Pendiente actualizado` y `Eliminado`.
+
+### Productos
+
+- `POST /api/productos` JSON -> `201` para `Teclado Mecanico`.
+- `POST /api/productos` JSON -> `201` para `Mouse Gamer`.
+- `POST /api/productos` multipart con imagen -> `201` para `Camara Web`.
+- `GET /api/productos/1` -> `200`.
+- `PUT /api/productos/1` JSON -> `200`.
+- `PUT /api/productos/3` multipart con nueva imagen -> `200`.
+- `GET /api/productos` -> `200`, devolvio `3` registros.
+- Filtros probados:
+   - `?categoria=1` -> `2` resultados.
+   - `?usuario=1` -> `3` resultados.
+   - `?search=teclado` -> `1` resultado.
+   - `?minPrecio=10&maxPrecio=40` -> `2` resultados.
+- `DELETE /api/productos/2` -> `204`.
+- Persistencia verificada: el producto 3 quedo con foto guardada (`foto_len = 23`).
+
+### Carrito
+
+- `POST /api/carrito` -> `201`.
+- `GET /api/carrito/1` -> `200`.
+- `PUT /api/carrito/1` -> `200`.
+- `POST /api/carrito/items` -> `201`.
+- `GET /api/carrito/1/items` -> `200`.
+- `PUT /api/carrito/1/items/1` -> `200`.
+- `DELETE /api/carrito/items/1` -> `204`.
+- `DELETE /api/carrito/1` -> `204`.
+
+### Compra
+
+- `POST /api/compras/2` -> `201`.
+- `GET /api/compra/1` -> `200`.
+- `GET /api/compras/1` -> `200`, devolvio `1` compra.
+- `GET /api/compras/1/detalle` -> `200`, devolvio `1` item.
+- `PUT /api/compra/1` -> `200`.
+- Persistencia verificada:
+   - `Compra.total = 110.00`
+   - `DetalleCompra.subtotal = 110.00`
+
+### Verificacion directa en base
+
+- `Categoria` -> `2` filas activas.
+- `Estado` -> `2` filas.
+- `Producto` -> `3` filas, con una foto almacenada.
+- `Carrito` -> `1` carrito final activo.
+- `DetalleCarrito` -> `1` fila antes de borrar el carrito de pruebas.
+- `Compra` -> `1` fila.
+- `DetalleCompra` -> `1` fila.
+- `Usuario`, `MetodoPago`, `DireccionEnvio` -> `1` fila cada una, usadas para la compra.
+
+## Flujo completo de la app
+
+1. Levantar MySQL 8.0.45 y aplicar `v1.sql`, `v2.sql`, `v3.sql` y `v4.sql`.
+2. Arrancar la API Spring Boot con `mvnw.cmd spring-boot:run`.
+3. Validar salud con `GET /api/health`.
+4. Crear categorias y estados necesarios para catalogo y operaciones.
+5. Crear productos:
+    - por JSON cuando no hay imagen,
+    - por multipart cuando se carga o actualiza foto.
+6. Consultar productos con filtros por categoria, usuario, busqueda y precio.
+7. Crear un carrito con sus items.
+8. Actualizar o borrar items del carrito si cambia la seleccion.
+9. Generar la compra desde un carrito con usuario, metodo de pago y direccion.
+10. Consultar la compra creada y su detalle.
+11. Verificar en MySQL que los `GET` devuelven lo mismo que quedo guardado.
+
+## Orden sugerido de uso real
+
+1. Categorias.
+2. Estados.
+3. Productos.
+4. Carrito.
+5. Compra.
+6. Consulta final en base y en Workbench.

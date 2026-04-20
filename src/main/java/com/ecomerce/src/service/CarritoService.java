@@ -9,6 +9,8 @@ public interface CarritoService {
 
 	List<Carrito> listar();
 
+	List<Carrito> listarPorUsuario(Integer usuarioId);
+
 	Carrito obtenerPorId(Integer id);
 
 	Carrito crear(CarritoRequest request);

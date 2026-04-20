@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -18,6 +19,18 @@ public class GlobalExceptionHandler {
 	public ResponseEntity<ErrorResponse> handleResourceNotFound(ResourceNotFoundException exception,
 			HttpServletRequest request) {
 		return buildResponse(HttpStatus.NOT_FOUND, exception.getMessage(), request.getRequestURI());
+	}
+
+	@ExceptionHandler(IllegalArgumentException.class)
+	public ResponseEntity<ErrorResponse> handleIllegalArgument(IllegalArgumentException exception,
+			HttpServletRequest request) {
+		return buildResponse(HttpStatus.BAD_REQUEST, exception.getMessage(), request.getRequestURI());
+	}
+
+	@ExceptionHandler(BadCredentialsException.class)
+	public ResponseEntity<ErrorResponse> handleBadCredentials(BadCredentialsException exception,
+			HttpServletRequest request) {
+		return buildResponse(HttpStatus.UNAUTHORIZED, "Credenciales invalidas", request.getRequestURI());
 	}
 
 	@ExceptionHandler(Exception.class)

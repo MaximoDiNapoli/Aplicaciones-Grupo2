@@ -1,4 +1,4 @@
-package com.ecomerce.src.service;
+package com.ecomerce.src.service.impl;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -15,6 +15,7 @@ import com.ecomerce.src.repository.CarritoRepository;
 import com.ecomerce.src.repository.CompraRepository;
 import com.ecomerce.src.repository.DetalleCarritoRepository;
 import com.ecomerce.src.repository.DetalleCompraRepository;
+import com.ecomerce.src.service.CompraService;
 
 @Service
 public class CompraServiceImpl implements CompraService {
