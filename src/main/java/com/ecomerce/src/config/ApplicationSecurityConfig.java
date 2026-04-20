@@ -1,5 +1,7 @@
 package com.ecomerce.src.config;
 
+import java.util.Locale;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -12,24 +14,27 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import com.ecomerce.src.entity.AuthUser;
-import com.ecomerce.src.repository.AuthUserRepository;
+import com.ecomerce.src.repository.UserRepository;
 
 @Configuration
 public class ApplicationSecurityConfig {
 
-	private final AuthUserRepository authUserRepository;
+	private static final String DEFAULT_ROLE = "COMPRADOR";
 
-	public ApplicationSecurityConfig(AuthUserRepository authUserRepository) {
-		this.authUserRepository = authUserRepository;
+	private final UserRepository userRepository;
+
+	public ApplicationSecurityConfig(UserRepository userRepository) {
+		this.userRepository = userRepository;
 	}
 
 	@Bean
 	public UserDetailsService userDetailsService() {
 		return username -> {
-			AuthUser user = authUserRepository.findByEmail(username)
+			com.ecomerce.src.entity.User user = userRepository.findByEmail(username)
 					.orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
-			String role = user.getRol() == null || user.getRol().isBlank() ? "USER" : user.getRol().trim();
+			String role = user.getRol() == null || user.getRol().isBlank()
+					? DEFAULT_ROLE
+					: user.getRol().trim().toUpperCase(Locale.ROOT);
 			return User.withUsername(user.getEmail())
 					.password(user.getPasswordHash())
 					.roles(role)

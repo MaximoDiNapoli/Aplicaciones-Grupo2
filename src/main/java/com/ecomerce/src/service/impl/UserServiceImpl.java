@@ -1,9 +1,14 @@
 package com.ecomerce.src.service.impl;
 
+import java.util.Locale;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.ecomerce.src.dto.UserRequest;
@@ -58,8 +63,20 @@ public class UserServiceImpl implements UserService {
             usuario.setEmail(userDetails.getEmail());
         if (userDetails.getTelefono() != null)
             usuario.setTelefono(userDetails.getTelefono());
-        if (userDetails.getRol() != null)
-            usuario.setRol(userDetails.getRol());
+        if (userDetails.getRol() != null) {
+            if (!isAuthenticatedAdmin()) {
+                throw new AccessDeniedException("Solo un administrador puede modificar el rol de un usuario");
+            }
+
+            String rolNormalizado = userDetails.getRol().trim().toUpperCase(Locale.ROOT);
+            if (!"COMPRADOR".equals(rolNormalizado)
+                    && !"VENDEDOR".equals(rolNormalizado)
+                    && !"ADMINISTRADOR".equals(rolNormalizado)
+                    && !"USER".equals(rolNormalizado)) {
+                throw new IllegalArgumentException("Rol invalido. Roles permitidos: COMPRADOR, VENDEDOR, ADMINISTRADOR");
+            }
+            usuario.setRol(rolNormalizado);
+        }
 
         User usuarioUpdated = this.userRepository.save(usuario);
 
@@ -82,5 +99,16 @@ public class UserServiceImpl implements UserService {
                 usuario.getTelefono(),
                 usuario.getRol(),
                 usuario.getCreatedAt());
+    }
+
+    private boolean isAuthenticatedAdmin() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return false;
+        }
+
+        return authentication.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .anyMatch("ROLE_ADMINISTRADOR"::equals);
     }
 }
