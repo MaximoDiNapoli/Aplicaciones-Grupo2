@@ -4,8 +4,10 @@ import com.ecomerce.src.dto.UserRequest;
 import com.ecomerce.src.dto.UserResponse;
 import com.ecomerce.src.entity.Carrito;
 import com.ecomerce.src.entity.Compra;
+import com.ecomerce.src.entity.DireccionEnvio;
 import com.ecomerce.src.service.CarritoService;
 import com.ecomerce.src.service.CompraService;
+import com.ecomerce.src.service.DireccionEnvioService;
 import com.ecomerce.src.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +27,9 @@ public class UsuarioController {
 
     @Autowired
     private CarritoService carritoService;
+
+    @Autowired
+    private DireccionEnvioService direccionEnvioService;
 
     @GetMapping
     public ResponseEntity<List<UserResponse>> getUsers(
@@ -75,8 +80,8 @@ public class UsuarioController {
     }
 
     @GetMapping("/{id}/direcciones")
-    public ResponseEntity<?> getUserDirecciones(@PathVariable Long id) {
-        // Lógica para traer direcciones
-        return ResponseEntity.ok("Direcciones del usuario " + id);
+    public ResponseEntity<List<DireccionEnvio>> getUserDirecciones(@PathVariable Integer id) {
+        this.userService.getUserById(id);
+        return ResponseEntity.ok(this.direccionEnvioService.listarPorUsuario(id));
     }
 }

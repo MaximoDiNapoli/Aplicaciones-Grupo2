@@ -7,6 +7,10 @@ import java.util.List;
 import java.util.Locale;
 
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -137,6 +141,27 @@ public class ProductServiceImpl implements ProductService {
 		String rol = usuario.getRol() == null ? "" : usuario.getRol().trim().toUpperCase(Locale.ROOT);
 		if (!"VENDEDOR".equals(rol) && !"ADMINISTRADOR".equals(rol)) {
 			throw new IllegalArgumentException("Solo usuarios con rol VENDEDOR o ADMINISTRADOR pueden publicar productos");
+		}
+		validateAuthenticatedUserCanPublish(usuario);
+	}
+
+	private void validateAuthenticatedUserCanPublish(User usuario) {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		if (authentication == null || !authentication.isAuthenticated()) {
+			throw new AccessDeniedException("No autenticado");
+		}
+
+		boolean isAdmin = authentication.getAuthorities().stream()
+				.map(GrantedAuthority::getAuthority)
+				.anyMatch("ROLE_ADMINISTRADOR"::equals);
+		if (isAdmin) {
+			return;
+		}
+
+		String authenticatedEmail = authentication.getName() == null ? "" : authentication.getName().trim();
+		String requestedEmail = usuario.getEmail() == null ? "" : usuario.getEmail().trim();
+		if (!authenticatedEmail.equalsIgnoreCase(requestedEmail)) {
+			throw new AccessDeniedException("No tiene permisos para publicar productos en nombre de otro usuario");
 		}
 	}
 

@@ -8,6 +8,8 @@ public interface DireccionEnvioService {
 
     List<DireccionEnvio> listar();
 
+    List<DireccionEnvio> listarPorUsuario(Integer idUsuario);
+
     DireccionEnvio obtenerPorId(Integer id);
 
     DireccionEnvio crear(DireccionEnvioRequest request);

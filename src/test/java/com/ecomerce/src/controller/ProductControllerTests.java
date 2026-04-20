@@ -22,12 +22,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.http.MediaType;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.security.core.userdetails.User;
 
 import com.ecomerce.src.entity.Product;
 import com.ecomerce.src.repository.ProductRepository;
+import com.ecomerce.src.security.JwtService;
 
 class ProductControllerTests {
 
@@ -35,8 +36,10 @@ class ProductControllerTests {
 	private static ConfigurableApplicationContext context;
 	private static ProductRepository productRepository;
 	private static JdbcTemplate jdbcTemplate;
+	private static JwtService jwtService;
 	private static int port;
-	private String accessToken;
+	private String sellerAccessToken;
+	private String buyerAccessToken;
 
 	@BeforeAll
 	static void startApplication() {
@@ -51,6 +54,7 @@ class ProductControllerTests {
 		context = new SpringApplicationBuilder(TestApplication.class).run();
 		productRepository = context.getBean(ProductRepository.class);
 		jdbcTemplate = context.getBean(JdbcTemplate.class);
+		jwtService = context.getBean(JwtService.class);
 	}
 
 	@AfterAll
@@ -63,13 +67,36 @@ class ProductControllerTests {
 	@BeforeEach
 	void cleanDatabase() {
 		productRepository.deleteAll();
-		jdbcTemplate.update("DELETE FROM usuario WHERE id IN (9001, 9002)");
+		jdbcTemplate.update("DELETE FROM usuario WHERE id IN (9001, 9002, 9003)");
 		jdbcTemplate.update("INSERT INTO usuario (id, nombre, email, telefono, password_hash, rol) VALUES (9001, 'Seller Test', 'seller@test.com', '111111', 'x', 'VENDEDOR')");
 		jdbcTemplate.update("INSERT INTO usuario (id, nombre, email, telefono, password_hash, rol) VALUES (9002, 'Buyer Test', 'buyer@test.com', '222222', 'x', 'COMPRADOR')");
+		jdbcTemplate.update("INSERT INTO usuario (id, nombre, email, telefono, password_hash, rol) VALUES (9003, 'Seller Other', 'seller2@test.com', '333333', 'x', 'VENDEDOR')");
 		jdbcTemplate.update("DELETE FROM categoria WHERE id IN (1, 2)");
 		jdbcTemplate.update("INSERT INTO categoria (id, nombre, descripcion) VALUES (1, 'Cat 1', 'Categoria de pruebas 1')");
 		jdbcTemplate.update("INSERT INTO categoria (id, nombre, descripcion) VALUES (2, 'Cat 2', 'Categoria de pruebas 2')");
-		accessToken = registerAndGetToken();
+		sellerAccessToken = generateToken("seller@test.com", "VENDEDOR");
+		buyerAccessToken = generateToken("buyer@test.com", "COMPRADOR");
+	}
+
+	@Test
+	void shouldRejectCreateProductWhenAuthenticatedUserPublishesForAnotherSeller() throws Exception {
+		String boundary = "----BoundaryForIdentityCheck";
+
+		HttpRequest createRequest = HttpRequest.newBuilder(uri("/api/productos"))
+				.header("Authorization", "Bearer " + sellerAccessToken)
+				.header("Content-Type", "multipart/form-data; boundary=" + boundary)
+				.POST(HttpRequest.BodyPublishers.ofString(buildMultipartWithoutFileBody(
+						boundary,
+						"9003",
+						"1",
+						"Producto identidad invalida",
+						"60.00",
+						"Debe fallar por identidad",
+						"10"), StandardCharsets.UTF_8))
+				.build();
+
+		HttpResponse<String> createResponse = HTTP_CLIENT.send(createRequest, HttpResponse.BodyHandlers.ofString());
+		assertEquals(403, createResponse.statusCode());
 	}
 
 	@Test
@@ -77,7 +104,7 @@ class ProductControllerTests {
 		String boundary = "----BoundaryForBuyerRoleCreateTest";
 
 		HttpRequest createRequest = HttpRequest.newBuilder(uri("/api/productos"))
-				.header("Authorization", "Bearer " + accessToken)
+				.header("Authorization", "Bearer " + buyerAccessToken)
 				.header("Content-Type", "multipart/form-data; boundary=" + boundary)
 				.POST(HttpRequest.BodyPublishers.ofString(buildMultipartWithoutFileBody(
 						boundary,
@@ -90,8 +117,7 @@ class ProductControllerTests {
 				.build();
 
 		HttpResponse<String> createResponse = HTTP_CLIENT.send(createRequest, HttpResponse.BodyHandlers.ofString());
-		assertEquals(400, createResponse.statusCode());
-		assertEquals(true, createResponse.body().contains("VENDEDOR o ADMINISTRADOR"));
+		assertEquals(403, createResponse.statusCode());
 	}
 
 	@Test
@@ -99,7 +125,7 @@ class ProductControllerTests {
 		String boundary = "----BoundaryForProductCreateTest";
 
 		HttpRequest createRequest = HttpRequest.newBuilder(uri("/api/productos"))
-				.header("Authorization", "Bearer " + accessToken)
+				.header("Authorization", "Bearer " + sellerAccessToken)
 				.header("Content-Type", "multipart/form-data; boundary=" + boundary)
 				.POST(HttpRequest.BodyPublishers.ofString(buildMultipartWithoutFileBody(
 						boundary,
@@ -119,7 +145,7 @@ class ProductControllerTests {
 
 		HttpResponse<String> getResponse = HTTP_CLIENT.send(
 				HttpRequest.newBuilder(uri("/api/productos/" + id))
-						.header("Authorization", "Bearer " + accessToken)
+						.header("Authorization", "Bearer " + sellerAccessToken)
 						.GET()
 						.build(),
 				HttpResponse.BodyHandlers.ofString());
@@ -138,7 +164,7 @@ class ProductControllerTests {
 
 		HttpResponse<String> byCategory = HTTP_CLIENT.send(
 				HttpRequest.newBuilder(uri("/api/productos?categoria=1"))
-						.header("Authorization", "Bearer " + accessToken)
+						.header("Authorization", "Bearer " + sellerAccessToken)
 						.GET()
 						.build(),
 				HttpResponse.BodyHandlers.ofString());
@@ -147,7 +173,7 @@ class ProductControllerTests {
 
 		HttpResponse<String> byUser = HTTP_CLIENT.send(
 				HttpRequest.newBuilder(uri("/api/productos?usuario=9001"))
-						.header("Authorization", "Bearer " + accessToken)
+						.header("Authorization", "Bearer " + sellerAccessToken)
 						.GET()
 						.build(),
 				HttpResponse.BodyHandlers.ofString());
@@ -156,7 +182,7 @@ class ProductControllerTests {
 
 		HttpResponse<String> bySearch = HTTP_CLIENT.send(
 				HttpRequest.newBuilder(uri("/api/productos?search=teclado"))
-						.header("Authorization", "Bearer " + accessToken)
+						.header("Authorization", "Bearer " + sellerAccessToken)
 						.GET()
 						.build(),
 				HttpResponse.BodyHandlers.ofString());
@@ -165,7 +191,7 @@ class ProductControllerTests {
 
 		HttpResponse<String> byPrice = HTTP_CLIENT.send(
 				HttpRequest.newBuilder(uri("/api/productos?minPrecio=10&maxPrecio=100"))
-						.header("Authorization", "Bearer " + accessToken)
+						.header("Authorization", "Bearer " + sellerAccessToken)
 						.GET()
 						.build(),
 				HttpResponse.BodyHandlers.ofString());
@@ -179,7 +205,7 @@ class ProductControllerTests {
 
 		HttpResponse<String> deleteResponse = HTTP_CLIENT.send(
 				HttpRequest.newBuilder(uri("/api/productos/" + product.getId()))
-						.header("Authorization", "Bearer " + accessToken)
+						.header("Authorization", "Bearer " + sellerAccessToken)
 						.DELETE()
 						.build(),
 				HttpResponse.BodyHandlers.ofString());
@@ -187,7 +213,7 @@ class ProductControllerTests {
 
 		HttpResponse<String> getDeletedResponse = HTTP_CLIENT.send(
 				HttpRequest.newBuilder(uri("/api/productos/" + product.getId()))
-						.header("Authorization", "Bearer " + accessToken)
+						.header("Authorization", "Bearer " + sellerAccessToken)
 						.GET()
 						.build(),
 				HttpResponse.BodyHandlers.ofString());
@@ -205,7 +231,7 @@ class ProductControllerTests {
 		String boundary = "----BoundaryForProductPhotoTest";
 
 		HttpRequest createRequest = HttpRequest.newBuilder(uri("/api/productos"))
-				.header("Authorization", "Bearer " + accessToken)
+				.header("Authorization", "Bearer " + sellerAccessToken)
 				.header("Content-Type", "multipart/form-data; boundary=" + boundary)
 				.POST(HttpRequest.BodyPublishers.ofString(buildMultipartProductBody(
 						boundary,
@@ -227,7 +253,7 @@ class ProductControllerTests {
 		assertArrayEquals(createdPhotoBytes, createdProduct.getFoto());
 
 		HttpRequest updateRequest = HttpRequest.newBuilder(uri("/api/productos/" + id))
-				.header("Authorization", "Bearer " + accessToken)
+				.header("Authorization", "Bearer " + sellerAccessToken)
 				.header("Content-Type", "multipart/form-data; boundary=" + boundary)
 				.PUT(HttpRequest.BodyPublishers.ofString(buildMultipartProductBody(
 						boundary,
@@ -297,32 +323,11 @@ class ProductControllerTests {
 		return count;
 	}
 
-	private String registerAndGetToken() {
-		String email = "product-tests-" + System.nanoTime() + "@example.com";
-		HttpRequest registerRequest = HttpRequest.newBuilder(uri("/api/auth/register"))
-				.header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
-				.POST(HttpRequest.BodyPublishers.ofString("""
-					{
-					  "nombre": "Tester",
-					  "email": "%s",
-					  "password": "password123",
-					  "telefono": "111111"
-					}
-					""".formatted(email)))
-				.build();
-
-		try {
-			HttpResponse<String> registerResponse = HTTP_CLIENT.send(registerRequest, HttpResponse.BodyHandlers.ofString());
-			assertEquals(200, registerResponse.statusCode());
-			Pattern pattern = Pattern.compile("\\\"accessToken\\\"\\s*:\\s*\\\"([^\\\"]+)\\\"");
-			Matcher matcher = pattern.matcher(registerResponse.body());
-			if (!matcher.find()) {
-				throw new IllegalStateException("No se pudo obtener token de autenticacion");
-			}
-			return matcher.group(1);
-		} catch (Exception exception) {
-			throw new IllegalStateException("Error al registrar usuario de prueba", exception);
-		}
+	private String generateToken(String email, String role) {
+		return jwtService.generateToken(User.withUsername(email)
+				.password("unused")
+				.roles(role)
+				.build());
 	}
 
 	private String buildMultipartProductBody(

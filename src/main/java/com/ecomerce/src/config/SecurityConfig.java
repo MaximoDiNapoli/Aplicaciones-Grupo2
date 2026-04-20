@@ -4,6 +4,7 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -30,6 +31,12 @@ public class SecurityConfig {
 		http.csrf(AbstractHttpConfigurer::disable)
 				.authorizeHttpRequests(auth -> auth
 						.requestMatchers("/api/health", "/api/auth/**", "/error").permitAll()
+						.requestMatchers(HttpMethod.POST, "/api/productos/**").hasAnyRole("VENDEDOR", "ADMINISTRADOR")
+						.requestMatchers(HttpMethod.PUT, "/api/productos/**").hasAnyRole("VENDEDOR", "ADMINISTRADOR")
+						.requestMatchers(HttpMethod.DELETE, "/api/productos/**").hasAnyRole("VENDEDOR", "ADMINISTRADOR")
+						.requestMatchers(HttpMethod.POST, "/api/metodos-pago/**").hasRole("ADMINISTRADOR")
+						.requestMatchers(HttpMethod.PUT, "/api/metodos-pago/**").hasRole("ADMINISTRADOR")
+						.requestMatchers(HttpMethod.DELETE, "/api/metodos-pago/**").hasRole("ADMINISTRADOR")
 						.anyRequest().authenticated())
 				.sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
 				.authenticationProvider(authenticationProvider)

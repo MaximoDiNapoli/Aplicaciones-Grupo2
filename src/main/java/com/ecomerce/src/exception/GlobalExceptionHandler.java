@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -31,6 +32,12 @@ public class GlobalExceptionHandler {
 	public ResponseEntity<ErrorResponse> handleBadCredentials(BadCredentialsException exception,
 			HttpServletRequest request) {
 		return buildResponse(HttpStatus.UNAUTHORIZED, "Credenciales invalidas", request.getRequestURI());
+	}
+
+	@ExceptionHandler(AccessDeniedException.class)
+	public ResponseEntity<ErrorResponse> handleAccessDenied(AccessDeniedException exception,
+			HttpServletRequest request) {
+		return buildResponse(HttpStatus.FORBIDDEN, exception.getMessage(), request.getRequestURI());
 	}
 
 	@ExceptionHandler(Exception.class)

@@ -19,7 +19,9 @@
     { "key": "accessToken", "value": "" },
     { "key": "usuarioId", "value": "1" },
     { "key": "metodoPagoId", "value": "1" },
+    { "key": "metodoPagoDeleteId", "value": "" },
     { "key": "direccionEnvioId", "value": "1" },
+    { "key": "direccionDeleteId", "value": "" },
     { "key": "categoriaAId", "value": "" },
     { "key": "categoriaBId", "value": "" },
     { "key": "categoriaDeleteId", "value": "" },
@@ -304,7 +306,7 @@
           }
         },
         {
-          "name": "GET /api/usuarios/:id/compras (con token => 200)",
+          "name": "GET /api/users/:id/compras (con token => 200)",
           "event": [
             {
               "listen": "test",
@@ -318,7 +320,7 @@
           ],
           "request": {
             "method": "GET",
-            "url": "{{baseUrl}}/api/usuarios/{{usuarioId}}/compras"
+            "url": "{{baseUrl}}/api/users/{{usuarioId}}/compras"
           }
         }
       ]
@@ -524,6 +526,190 @@
           "request": {
             "method": "DELETE",
             "url": "{{baseUrl}}/api/estados/{{estadoDeleteId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Metodos de Pago",
+      "item": [
+        {
+          "name": "POST /api/metodos-pago (main)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "pm.collectionVariables.set('metodoPagoId', data.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tipo\": \"Tarjeta Postman\",\n  \"descripcion\": \"Metodo creado desde Postman\"\n}"
+            },
+            "url": "{{baseUrl}}/api/metodos-pago"
+          }
+        },
+        {
+          "name": "POST /api/metodos-pago (delete)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "pm.collectionVariables.set('metodoPagoDeleteId', data.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tipo\": \"Metodo temporal\",\n  \"descripcion\": \"Para delete\"\n}"
+            },
+            "url": "{{baseUrl}}/api/metodos-pago"
+          }
+        },
+        {
+          "name": "GET /api/metodos-pago",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/metodos-pago"
+          }
+        },
+        {
+          "name": "GET /api/metodos-pago/:id",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/metodos-pago/{{metodoPagoId}}"
+          }
+        },
+        {
+          "name": "PUT /api/metodos-pago/:id",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tipo\": \"Tarjeta Postman Actualizada\",\n  \"descripcion\": \"Metodo editado\"\n}"
+            },
+            "url": "{{baseUrl}}/api/metodos-pago/{{metodoPagoId}}"
+          }
+        },
+        {
+          "name": "DELETE /api/metodos-pago/:id",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/metodos-pago/{{metodoPagoDeleteId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Direcciones",
+      "item": [
+        {
+          "name": "POST /api/direcciones (main)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "pm.collectionVariables.set('direccionEnvioId', data.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idUsuario\": {{usuarioId}},\n  \"direccion\": \"Calle Postman 123\",\n  \"ciudad\": \"Buenos Aires\",\n  \"codigoPostal\": \"1000\",\n  \"esPrincipal\": true\n}"
+            },
+            "url": "{{baseUrl}}/api/direcciones"
+          }
+        },
+        {
+          "name": "POST /api/direcciones (delete)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "pm.collectionVariables.set('direccionDeleteId', data.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idUsuario\": {{usuarioId}},\n  \"direccion\": \"Calle Temporal 456\",\n  \"ciudad\": \"La Plata\",\n  \"codigoPostal\": \"1900\",\n  \"esPrincipal\": false\n}"
+            },
+            "url": "{{baseUrl}}/api/direcciones"
+          }
+        },
+        {
+          "name": "GET /api/direcciones",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/direcciones"
+          }
+        },
+        {
+          "name": "GET /api/direcciones/:id",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/direcciones/{{direccionEnvioId}}"
+          }
+        },
+        {
+          "name": "PUT /api/direcciones/:id",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idUsuario\": {{usuarioId}},\n  \"direccion\": \"Calle Postman 123 Piso 2\",\n  \"ciudad\": \"Buenos Aires\",\n  \"codigoPostal\": \"1000\",\n  \"esPrincipal\": true\n}"
+            },
+            "url": "{{baseUrl}}/api/direcciones/{{direccionEnvioId}}"
+          }
+        },
+        {
+          "name": "DELETE /api/direcciones/:id",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/direcciones/{{direccionDeleteId}}"
           }
         }
       ]
@@ -831,6 +1017,60 @@
       ]
     },
     {
+      "name": "Usuarios",
+      "item": [
+        {
+          "name": "GET /api/users",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/users"
+          }
+        },
+        {
+          "name": "GET /api/users/:id",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/users/{{usuarioId}}"
+          }
+        },
+        {
+          "name": "PUT /api/users/:id",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"telefono\": \"999999\"\n}"
+            },
+            "url": "{{baseUrl}}/api/users/{{usuarioId}}"
+          }
+        },
+        {
+          "name": "GET /api/users/:id/compras",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/users/{{usuarioId}}/compras"
+          }
+        },
+        {
+          "name": "GET /api/users/:id/carrito",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/users/{{usuarioId}}/carrito"
+          }
+        },
+        {
+          "name": "GET /api/users/:id/direcciones",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/users/{{usuarioId}}/direcciones"
+          }
+        }
+      ]
+    },
+    {
       "name": "Compras",
       "item": [
         {
@@ -860,10 +1100,10 @@
           }
         },
         {
-          "name": "GET /api/usuarios/:idUsuario/compras",
+          "name": "GET /api/users/:idUsuario/compras",
           "request": {
             "method": "GET",
-            "url": "{{baseUrl}}/api/usuarios/{{usuarioId}}/compras"
+            "url": "{{baseUrl}}/api/users/{{usuarioId}}/compras"
           }
         },
         {

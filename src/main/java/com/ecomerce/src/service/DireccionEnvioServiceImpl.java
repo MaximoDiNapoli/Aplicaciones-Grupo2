@@ -23,6 +23,11 @@ public class DireccionEnvioServiceImpl implements DireccionEnvioService {
     }
 
     @Override
+    public List<DireccionEnvio> listarPorUsuario(Integer idUsuario) {
+        return direccionEnvioRepository.findByIdUsuario(idUsuario);
+    }
+
+    @Override
     public DireccionEnvio obtenerPorId(Integer id) {
         return direccionEnvioRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("No existe dirección con id " + id));
@@ -30,12 +35,13 @@ public class DireccionEnvioServiceImpl implements DireccionEnvioService {
 
     @Override
     public DireccionEnvio crear(DireccionEnvioRequest request) {
+        Boolean esPrincipal = request.getEsPrincipal() != null ? request.getEsPrincipal() : Boolean.FALSE;
         DireccionEnvio direccion = new DireccionEnvio(
             request.getIdUsuario(),
             request.getDireccion(),
             request.getCiudad(),
             request.getCodigoPostal(),
-            request.getEsPrincipal() != null ? request.getEsPrincipal() : false
+            esPrincipal
         );
         return direccionEnvioRepository.save(direccion);
     }
@@ -49,7 +55,8 @@ public class DireccionEnvioServiceImpl implements DireccionEnvioService {
         direccion.setDireccion(request.getDireccion());
         direccion.setCiudad(request.getCiudad());
         direccion.setCodigoPostal(request.getCodigoPostal());
-        direccion.setEsPrincipal(request.getEsPrincipal() != null ? request.getEsPrincipal() : false);
+        Boolean esPrincipal = request.getEsPrincipal() != null ? request.getEsPrincipal() : Boolean.FALSE;
+        direccion.setEsPrincipal(esPrincipal);
 
         return direccionEnvioRepository.save(direccion);
     }

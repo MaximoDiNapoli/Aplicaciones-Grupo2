@@ -1,17 +1,24 @@
-package com.ecomerce.src.controller; // <-- Esto soluciona el "Missing package statement"
+package com.ecomerce.src.controller;
 
-// Estos son los imports que arreglan los "Cannot resolve symbol" de Spring
-import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
-import jakarta.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
-// Estos importan tus propias clases (ajustá los nombres si son distintos)
-import com.ecomerce.src.entity.MetodoPago;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.ecomerce.src.dto.MetodoPagoRequest;
+import com.ecomerce.src.entity.MetodoPago;
 import com.ecomerce.src.service.MetodoPagoService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/metodos-pago")
@@ -37,7 +44,6 @@ public class MetodoPagoController {
     @PostMapping
     public ResponseEntity<MetodoPago> crear(@Valid @RequestBody MetodoPagoRequest request) {
         MetodoPago creado = metodoPagoService.crear(request);
-        // URI.create requiere importar java.net.URI
         return ResponseEntity.created(URI.create("/api/metodos-pago/" + creado.getId())).body(creado);
     }
 
