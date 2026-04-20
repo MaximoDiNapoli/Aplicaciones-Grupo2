@@ -8,7 +8,10 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -31,6 +34,25 @@ public class GlobalExceptionHandler {
 	public ResponseEntity<ErrorResponse> handleBadCredentials(BadCredentialsException exception,
 			HttpServletRequest request) {
 		return buildResponse(HttpStatus.UNAUTHORIZED, "Credenciales invalidas", request.getRequestURI());
+	}
+
+	@ExceptionHandler(AccessDeniedException.class)
+	public ResponseEntity<ErrorResponse> handleAccessDenied(AccessDeniedException exception,
+			HttpServletRequest request) {
+		return buildResponse(HttpStatus.FORBIDDEN, exception.getMessage(), request.getRequestURI());
+	}
+
+	@ExceptionHandler(MethodArgumentTypeMismatchException.class)
+	public ResponseEntity<ErrorResponse> handleTypeMismatch(MethodArgumentTypeMismatchException exception,
+			HttpServletRequest request) {
+		String message = "Parametro invalido: " + exception.getName();
+		return buildResponse(HttpStatus.BAD_REQUEST, message, request.getRequestURI());
+	}
+
+	@ExceptionHandler(HttpMessageNotReadableException.class)
+	public ResponseEntity<ErrorResponse> handleHttpMessageNotReadable(HttpMessageNotReadableException exception,
+			HttpServletRequest request) {
+		return buildResponse(HttpStatus.BAD_REQUEST, "Cuerpo de solicitud invalido", request.getRequestURI());
 	}
 
 	@ExceptionHandler(Exception.class)

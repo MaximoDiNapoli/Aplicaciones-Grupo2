@@ -37,6 +37,11 @@ public class EstadoController {
 		return ResponseEntity.ok(estadoService.listar());
 	}
 
+	@GetMapping("/{id}")
+	public ResponseEntity<Estado> obtenerPorId(@PathVariable Integer id) {
+		return ResponseEntity.ok(estadoService.obtenerPorId(id));
+	}
+
 	@PostMapping
 	public ResponseEntity<Estado> crear(@Valid @RequestBody EstadoRequest request) {
 		Estado creado = estadoService.crear(request);

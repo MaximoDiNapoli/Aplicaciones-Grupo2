@@ -7,6 +7,10 @@ import java.util.List;
 import java.util.Locale;
 
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -78,6 +82,13 @@ public class ProductServiceImpl implements ProductService {
 	@Override
 	public Product actualizar(Integer id, ProductRequest request) {
 		Product product = obtenerPorId(id);
+		validateAuthenticatedUserCanManageProduct(product);
+		if (!isAuthenticatedAdmin() && request.getUsuarioId() != null && !request.getUsuarioId().equals(product.getUsuarioId())) {
+			throw new AccessDeniedException("No tiene permisos para transferir la propiedad del producto");
+		}
+		if (request.getUsuarioId() == null) {
+			request.setUsuarioId(product.getUsuarioId());
+		}
 		applyRequest(product, request);
 		return productRepository.save(product);
 	}
@@ -85,6 +96,13 @@ public class ProductServiceImpl implements ProductService {
 	@Override
 	public Product actualizar(Integer id, ProductRequest request, MultipartFile image) {
 		Product product = obtenerPorId(id);
+		validateAuthenticatedUserCanManageProduct(product);
+		if (!isAuthenticatedAdmin() && request.getUsuarioId() != null && !request.getUsuarioId().equals(product.getUsuarioId())) {
+			throw new AccessDeniedException("No tiene permisos para transferir la propiedad del producto");
+		}
+		if (request.getUsuarioId() == null) {
+			request.setUsuarioId(product.getUsuarioId());
+		}
 		applyRequest(product, request);
 		applyImage(product, image);
 		return productRepository.save(product);
@@ -93,8 +111,30 @@ public class ProductServiceImpl implements ProductService {
 	@Override
 	public void eliminarLogico(Integer id) {
 		Product product = obtenerPorId(id);
+		validateAuthenticatedUserCanManageProduct(product);
 		product.setActivo(false);
 		productRepository.save(product);
+	}
+
+	private void validateAuthenticatedUserCanManageProduct(Product product) {
+		Integer ownerUserId = product.getUsuarioId();
+		if (ownerUserId == null) {
+			throw new IllegalArgumentException("El producto no tiene un usuario propietario asignado");
+		}
+
+		User owner = userRepository.findById(ownerUserId)
+				.orElseThrow(() -> new ResourceNotFoundException("No existe el usuario con id " + ownerUserId));
+		validateAuthenticatedUserCanPublish(owner);
+	}
+
+	private boolean isAuthenticatedAdmin() {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		if (authentication == null || !authentication.isAuthenticated()) {
+			return false;
+		}
+		return authentication.getAuthorities().stream()
+				.map(GrantedAuthority::getAuthority)
+				.anyMatch("ROLE_ADMINISTRADOR"::equals);
 	}
 
 	private Specification<Product> activos() {
@@ -137,6 +177,27 @@ public class ProductServiceImpl implements ProductService {
 		String rol = usuario.getRol() == null ? "" : usuario.getRol().trim().toUpperCase(Locale.ROOT);
 		if (!"VENDEDOR".equals(rol) && !"ADMINISTRADOR".equals(rol)) {
 			throw new IllegalArgumentException("Solo usuarios con rol VENDEDOR o ADMINISTRADOR pueden publicar productos");
+		}
+		validateAuthenticatedUserCanPublish(usuario);
+	}
+
+	private void validateAuthenticatedUserCanPublish(User usuario) {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		if (authentication == null || !authentication.isAuthenticated()) {
+			throw new AccessDeniedException("No autenticado");
+		}
+
+		boolean isAdmin = authentication.getAuthorities().stream()
+				.map(GrantedAuthority::getAuthority)
+				.anyMatch("ROLE_ADMINISTRADOR"::equals);
+		if (isAdmin) {
+			return;
+		}
+
+		String authenticatedEmail = authentication.getName() == null ? "" : authentication.getName().trim();
+		String requestedEmail = usuario.getEmail() == null ? "" : usuario.getEmail().trim();
+		if (!authenticatedEmail.equalsIgnoreCase(requestedEmail)) {
+			throw new AccessDeniedException("No tiene permisos para publicar productos en nombre de otro usuario");
 		}
 	}
 

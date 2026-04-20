@@ -18,4 +18,6 @@ public interface CompraService {
 	Compra actualizar(Integer id, CompraUpdateRequest request);
 
 	List<DetalleCompra> obtenerDetalle(Integer idCompra);
+
+	void eliminar(Integer id);
 }

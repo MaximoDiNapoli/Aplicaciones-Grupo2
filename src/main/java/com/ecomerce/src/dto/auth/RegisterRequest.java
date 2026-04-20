@@ -22,6 +22,9 @@ public class RegisterRequest {
 	@Size(max = 50)
 	private String telefono;
 
+	@Size(max = 30)
+	private String rol;
+
 	public String getNombre() {
 		return nombre;
 	}
@@ -52,5 +55,13 @@ public class RegisterRequest {
 
 	public void setTelefono(String telefono) {
 		this.telefono = telefono;
+	}
+
+	public String getRol() {
+		return rol;
+	}
+
+	public void setRol(String rol) {
+		this.rol = rol;
 	}
 }
