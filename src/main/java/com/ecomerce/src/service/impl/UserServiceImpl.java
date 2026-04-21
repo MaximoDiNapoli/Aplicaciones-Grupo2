@@ -16,6 +16,7 @@ import com.ecomerce.src.dto.UserResponse;
 import com.ecomerce.src.entity.User;
 import com.ecomerce.src.exception.ResourceNotFoundException;
 import com.ecomerce.src.repository.UserRepository;
+import com.ecomerce.src.security.CurrentUserService;
 import com.ecomerce.src.service.UserService;
 
 @Service
@@ -23,6 +24,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private CurrentUserService currentUserService;
 
     @Override
     public List<UserResponse> getUsers(String rol, String ciudad, String codigopostal) {
@@ -89,6 +93,20 @@ public class UserServiceImpl implements UserService {
             throw new ResourceNotFoundException("No se puede borrar: Usuario no encontrado");
         }
         this.userRepository.deleteById(id);
+    }
+
+    @Override
+    public UserResponse getCurrentUser() {
+        return this.crearResponseDTO(currentUserService.getCurrentUser());
+    }
+
+    @Override
+    public UserResponse updateCurrentUser(UserRequest userDetails) {
+        if (userDetails.getRol() != null && !isAuthenticatedAdmin()) {
+            throw new AccessDeniedException("Solo un administrador puede modificar el rol de un usuario");
+        }
+        Integer currentUserId = currentUserService.getCurrentUserId();
+        return updateUser(currentUserId, userDetails);
     }
 
     private UserResponse crearResponseDTO(User usuario) {

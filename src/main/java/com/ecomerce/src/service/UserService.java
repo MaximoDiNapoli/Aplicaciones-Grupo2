@@ -14,4 +14,8 @@ public interface UserService {
     public UserResponse updateUser(Integer id, UserRequest userDetails);
 
     public void deleteUser(Integer id);
+
+    public UserResponse getCurrentUser();
+
+    public UserResponse updateCurrentUser(UserRequest userDetails);
 }

@@ -8,33 +8,118 @@
   "auth": {
     "type": "bearer",
     "bearer": [
-      { "key": "token", "value": "{{accessToken}}", "type": "string" }
+      {
+        "key": "token",
+        "value": "{{accessToken}}",
+        "type": "string"
+      }
     ]
   },
   "variable": [
-    { "key": "baseUrl", "value": "http://127.0.0.1:8080" },
-    { "key": "authNombre", "value": "Postman Usuario" },
-    { "key": "authEmail", "value": "postman.user@example.com" },
-    { "key": "authPassword", "value": "password123" },
-    { "key": "accessToken", "value": "" },
-    { "key": "usuarioId", "value": "1" },
-    { "key": "metodoPagoId", "value": "1" },
-    { "key": "metodoPagoDeleteId", "value": "" },
-    { "key": "direccionEnvioId", "value": "1" },
-    { "key": "direccionDeleteId", "value": "" },
-    { "key": "categoriaAId", "value": "" },
-    { "key": "categoriaBId", "value": "" },
-    { "key": "categoriaDeleteId", "value": "" },
-    { "key": "estadoId", "value": "" },
-    { "key": "estadoDeleteId", "value": "" },
-    { "key": "producto1Id", "value": "" },
-    { "key": "producto2Id", "value": "" },
-    { "key": "producto3Id", "value": "" },
-    { "key": "carritoId", "value": "" },
-    { "key": "itemId", "value": "" },
-    { "key": "compraId", "value": "" },
-    { "key": "detalleCompraId", "value": "" },
-    { "key": "detalleCompraDeleteId", "value": "" }
+    {
+      "key": "baseUrl",
+      "value": "http://127.0.0.1:8080"
+    },
+    {
+      "key": "authNombre",
+      "value": "Postman Usuario"
+    },
+    {
+      "key": "authEmail",
+      "value": "postman.user@example.com"
+    },
+    {
+      "key": "authPassword",
+      "value": "password123"
+    },
+    {
+      "key": "accessToken",
+      "value": ""
+    },
+    {
+      "key": "adminToken",
+      "value": ""
+    },
+    {
+      "key": "vendorToken",
+      "value": ""
+    },
+    {
+      "key": "buyerToken",
+      "value": ""
+    },
+    {
+      "key": "usuarioId",
+      "value": "4"
+    },
+    {
+      "key": "metodoPagoId",
+      "value": "1"
+    },
+    {
+      "key": "metodoPagoDeleteId",
+      "value": ""
+    },
+    {
+      "key": "direccionEnvioId",
+      "value": "1"
+    },
+    {
+      "key": "direccionDeleteId",
+      "value": ""
+    },
+    {
+      "key": "categoriaAId",
+      "value": ""
+    },
+    {
+      "key": "categoriaBId",
+      "value": ""
+    },
+    {
+      "key": "categoriaDeleteId",
+      "value": ""
+    },
+    {
+      "key": "estadoId",
+      "value": ""
+    },
+    {
+      "key": "estadoDeleteId",
+      "value": ""
+    },
+    {
+      "key": "producto1Id",
+      "value": ""
+    },
+    {
+      "key": "producto2Id",
+      "value": ""
+    },
+    {
+      "key": "producto3Id",
+      "value": ""
+    },
+    {
+      "key": "carritoId",
+      "value": ""
+    },
+    {
+      "key": "itemId",
+      "value": ""
+    },
+    {
+      "key": "compraId",
+      "value": ""
+    },
+    {
+      "key": "detalleCompraId",
+      "value": ""
+    },
+    {
+      "key": "detalleCompraDeleteId",
+      "value": ""
+    }
   ],
   "item": [
     {
@@ -75,6 +160,7 @@
                 "exec": [
                   "pm.test('status 200', function () { pm.response.to.have.status(200); });",
                   "const data = pm.response.json();",
+                  "pm.collectionVariables.set('buyerToken', data.accessToken);",
                   "pm.collectionVariables.set('accessToken', data.accessToken);"
                 ]
               }
@@ -86,17 +172,20 @@
             },
             "method": "POST",
             "header": [
-              { "key": "Content-Type", "value": "application/json" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"nombre\": \"{{authNombre}}\",\n  \"email\": \"{{authEmail}}\",\n  \"password\": \"{{authPassword}}\",\n  \"telefono\": \"111111\"\n}"
+              "raw": "{\n  \"nombre\": \"{{authNombre}}\",\n  \"email\": \"{{authEmail}}\",\n  \"password\": \"{{authPassword}}\",\n  \"telefono\": \"111111\",\n  \"rol\": \"COMPRADOR\"\n}"
             },
             "url": "{{baseUrl}}/api/auth/register"
           }
         },
         {
-          "name": "POST /api/auth/login",
+          "name": "POST /api/auth/login (admin)",
           "event": [
             {
               "listen": "test",
@@ -105,6 +194,73 @@
                 "exec": [
                   "pm.test('status 200', function () { pm.response.to.have.status(200); });",
                   "const data = pm.response.json();",
+                  "pm.collectionVariables.set('adminToken', data.accessToken);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@selvachoco.com\",\n  \"password\": \"Secret123!\"\n}"
+            },
+            "url": "{{baseUrl}}/api/auth/login"
+          }
+        },
+        {
+          "name": "POST /api/auth/login (vendedor)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', function () { pm.response.to.have.status(200); });",
+                  "const data = pm.response.json();",
+                  "pm.collectionVariables.set('vendorToken', data.accessToken);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"marco@selvachoco.com\",\n  \"password\": \"Secret123!\"\n}"
+            },
+            "url": "{{baseUrl}}/api/auth/login"
+          }
+        },
+        {
+          "name": "POST /api/auth/login (comprador)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', function () { pm.response.to.have.status(200); });",
+                  "const data = pm.response.json();",
+                  "pm.collectionVariables.set('buyerToken', data.accessToken);",
                   "pm.collectionVariables.set('accessToken', data.accessToken);"
                 ]
               }
@@ -116,11 +272,14 @@
             },
             "method": "POST",
             "header": [
-              { "key": "Content-Type", "value": "application/json" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"email\": \"{{authEmail}}\",\n  \"password\": \"{{authPassword}}\"\n}"
+              "raw": "{\n  \"email\": \"camila@cliente.com\",\n  \"password\": \"Secret123!\"\n}"
             },
             "url": "{{baseUrl}}/api/auth/login"
           }
@@ -249,6 +408,10 @@
             }
           ],
           "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{"key": "token", "value": "{{buyerToken}}", "type": "string"}]
+            },
             "method": "GET",
             "url": "{{baseUrl}}/api/categorias"
           }
@@ -267,6 +430,10 @@
             }
           ],
           "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{"key": "token", "value": "{{buyerToken}}", "type": "string"}]
+            },
             "method": "GET",
             "url": "{{baseUrl}}/api/estados"
           }
@@ -285,12 +452,16 @@
             }
           ],
           "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{"key": "token", "value": "{{buyerToken}}", "type": "string"}]
+            },
             "method": "GET",
             "url": "{{baseUrl}}/api/productos"
           }
         },
         {
-          "name": "GET /api/carrito (con token => 200)",
+          "name": "GET /api/carrito (COMPRADOR => 200)",
           "event": [
             {
               "listen": "test",
@@ -303,32 +474,103 @@
             }
           ],
           "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{"key": "token", "value": "{{buyerToken}}", "type": "string"}]
+            },
             "method": "GET",
             "url": "{{baseUrl}}/api/carrito"
           }
         },
         {
-          "name": "GET /api/users/:id/compras (con token => 200)",
+          "name": "POST /api/productos (comprador => 403)",
           "event": [
             {
               "listen": "test",
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "pm.test('status 200', function () { pm.response.to.have.status(200); });"
+                  "pm.test('status 403', function () { pm.response.to.have.status(403); });"
                 ]
               }
             }
           ],
           "request": {
-            "method": "GET",
-            "url": "{{baseUrl}}/api/users/{{usuarioId}}/compras"
+            "auth": {
+              "type": "bearer",
+              "bearer": [{"key": "token", "value": "{{buyerToken}}", "type": "string"}]
+            },
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"categoriaId\": 1,\n  \"nombre\": \"No permitido\",\n  \"precio\": 1,\n  \"stock\": 1\n}"
+            },
+            "url": "{{baseUrl}}/api/productos"
+          }
+        },
+        {
+          "name": "POST /api/metodos-pago (comprador => 403)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 403', function () { pm.response.to.have.status(403); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{"key": "token", "value": "{{buyerToken}}", "type": "string"}]
+            },
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tipo\": \"No\",\n  \"descripcion\": \"no\"\n}"
+            },
+            "url": "{{baseUrl}}/api/metodos-pago"
+          }
+        },
+        {
+          "name": "POST /api/metodos-pago (vendedor => 403)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 403', function () { pm.response.to.have.status(403); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{"key": "token", "value": "{{vendorToken}}", "type": "string"}]
+            },
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tipo\": \"No\",\n  \"descripcion\": \"no\"\n}"
+            },
+            "url": "{{baseUrl}}/api/metodos-pago"
           }
         }
       ]
     },
     {
       "name": "Categorias",
+      "auth": {
+        "type": "bearer",
+        "bearer": [{"key": "token", "value": "{{adminToken}}", "type": "string"}]
+      },
       "item": [
         {
           "name": "POST /api/categorias (A)",
@@ -348,7 +590,10 @@
           "request": {
             "method": "POST",
             "header": [
-              { "key": "Content-Type", "value": "application/json" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
@@ -375,7 +620,10 @@
           "request": {
             "method": "POST",
             "header": [
-              { "key": "Content-Type", "value": "application/json" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
@@ -401,7 +649,10 @@
           "request": {
             "method": "POST",
             "header": [
-              { "key": "Content-Type", "value": "application/json" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
@@ -429,7 +680,10 @@
           "request": {
             "method": "PUT",
             "header": [
-              { "key": "Content-Type", "value": "application/json" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
@@ -449,6 +703,10 @@
     },
     {
       "name": "Estados",
+      "auth": {
+        "type": "bearer",
+        "bearer": [{"key": "token", "value": "{{adminToken}}", "type": "string"}]
+      },
       "item": [
         {
           "name": "POST /api/estados (main)",
@@ -467,7 +725,10 @@
           "request": {
             "method": "POST",
             "header": [
-              { "key": "Content-Type", "value": "application/json" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
@@ -493,7 +754,10 @@
           "request": {
             "method": "POST",
             "header": [
-              { "key": "Content-Type", "value": "application/json" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
@@ -510,11 +774,21 @@
           }
         },
         {
+          "name": "GET /api/estados/:id",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/estados/{{estadoId}}"
+          }
+        },
+        {
           "name": "PUT /api/estados/:id",
           "request": {
             "method": "PUT",
             "header": [
-              { "key": "Content-Type", "value": "application/json" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
@@ -534,6 +808,10 @@
     },
     {
       "name": "Metodos de Pago",
+      "auth": {
+        "type": "bearer",
+        "bearer": [{"key": "token", "value": "{{adminToken}}", "type": "string"}]
+      },
       "item": [
         {
           "name": "POST /api/metodos-pago (main)",
@@ -552,7 +830,10 @@
           "request": {
             "method": "POST",
             "header": [
-              { "key": "Content-Type", "value": "application/json" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
@@ -578,7 +859,10 @@
           "request": {
             "method": "POST",
             "header": [
-              { "key": "Content-Type", "value": "application/json" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
@@ -606,7 +890,10 @@
           "request": {
             "method": "PUT",
             "header": [
-              { "key": "Content-Type", "value": "application/json" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
@@ -626,6 +913,10 @@
     },
     {
       "name": "Direcciones",
+      "auth": {
+        "type": "bearer",
+        "bearer": [{"key": "token", "value": "{{buyerToken}}", "type": "string"}]
+      },
       "item": [
         {
           "name": "POST /api/direcciones (main)",
@@ -635,6 +926,7 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
+                  "pm.test('status 201', function () { pm.response.to.have.status(201); });",
                   "const data = pm.response.json();",
                   "pm.collectionVariables.set('direccionEnvioId', data.id);"
                 ]
@@ -644,7 +936,10 @@
           "request": {
             "method": "POST",
             "header": [
-              { "key": "Content-Type", "value": "application/json" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
@@ -661,6 +956,7 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
+                  "pm.test('status 201', function () { pm.response.to.have.status(201); });",
                   "const data = pm.response.json();",
                   "pm.collectionVariables.set('direccionDeleteId', data.id);"
                 ]
@@ -670,7 +966,10 @@
           "request": {
             "method": "POST",
             "header": [
-              { "key": "Content-Type", "value": "application/json" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
@@ -698,7 +997,10 @@
           "request": {
             "method": "PUT",
             "header": [
-              { "key": "Content-Type", "value": "application/json" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
@@ -718,6 +1020,10 @@
     },
     {
       "name": "Productos",
+      "auth": {
+        "type": "bearer",
+        "bearer": [{"key": "token", "value": "{{vendorToken}}", "type": "string"}]
+      },
       "item": [
         {
           "name": "POST /api/productos (multipart producto 1, sin foto)",
@@ -727,6 +1033,7 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
+                  "pm.test('status 201', function () { pm.response.to.have.status(201); });",
                   "const data = pm.response.json();",
                   "pm.collectionVariables.set('producto1Id', data.id);"
                 ]
@@ -738,12 +1045,12 @@
             "body": {
               "mode": "formdata",
               "formdata": [
-                { "key": "categoriaId", "value": "{{categoriaAId}}", "type": "text" },
-                { "key": "nombre", "value": "Postman Producto 1", "type": "text" },
-                { "key": "precio", "value": "25.50", "type": "text" },
-                { "key": "descripcion", "value": "Producto de prueba 1", "type": "text" },
-                { "key": "stock", "value": "4", "type": "text" },
-                { "key": "descuentoPorcentaje", "value": "10", "type": "text" }
+                {"key": "categoriaId", "value": "{{categoriaAId}}", "type": "text"},
+                {"key": "nombre", "value": "Postman Producto 1", "type": "text"},
+                {"key": "precio", "value": "25.50", "type": "text"},
+                {"key": "descripcion", "value": "Producto de prueba 1", "type": "text"},
+                {"key": "stock", "value": "4", "type": "text"},
+                {"key": "descuentoPorcentaje", "value": "10", "type": "text"}
               ]
             },
             "url": "{{baseUrl}}/api/productos"
@@ -757,6 +1064,7 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
+                  "pm.test('status 201', function () { pm.response.to.have.status(201); });",
                   "const data = pm.response.json();",
                   "pm.collectionVariables.set('producto2Id', data.id);"
                 ]
@@ -768,12 +1076,12 @@
             "body": {
               "mode": "formdata",
               "formdata": [
-                { "key": "categoriaId", "value": "{{categoriaBId}}", "type": "text" },
-                { "key": "nombre", "value": "Postman Producto 2", "type": "text" },
-                { "key": "precio", "value": "12.00", "type": "text" },
-                { "key": "descripcion", "value": "Producto de prueba 2", "type": "text" },
-                { "key": "stock", "value": "6", "type": "text" },
-                { "key": "descuentoPorcentaje", "value": "0", "type": "text" }
+                {"key": "categoriaId", "value": "{{categoriaBId}}", "type": "text"},
+                {"key": "nombre", "value": "Postman Producto 2", "type": "text"},
+                {"key": "precio", "value": "12.00", "type": "text"},
+                {"key": "descripcion", "value": "Producto de prueba 2", "type": "text"},
+                {"key": "stock", "value": "6", "type": "text"},
+                {"key": "descuentoPorcentaje", "value": "0", "type": "text"}
               ]
             },
             "url": "{{baseUrl}}/api/productos"
@@ -787,6 +1095,7 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
+                  "pm.test('status 201', function () { pm.response.to.have.status(201); });",
                   "const data = pm.response.json();",
                   "pm.collectionVariables.set('producto3Id', data.id);"
                 ]
@@ -798,13 +1107,13 @@
             "body": {
               "mode": "formdata",
               "formdata": [
-                { "key": "categoriaId", "value": "{{categoriaAId}}", "type": "text" },
-                { "key": "nombre", "value": "Postman Producto 3 con foto", "type": "text" },
-                { "key": "precio", "value": "35.00", "type": "text" },
-                { "key": "descripcion", "value": "Producto multipart", "type": "text" },
-                { "key": "stock", "value": "8", "type": "text" },
-                { "key": "descuentoPorcentaje", "value": "15", "type": "text" },
-                { "key": "image", "type": "file", "src": "" }
+                {"key": "categoriaId", "value": "{{categoriaAId}}", "type": "text"},
+                {"key": "nombre", "value": "Postman Producto 3 con foto", "type": "text"},
+                {"key": "precio", "value": "35.00", "type": "text"},
+                {"key": "descripcion", "value": "Producto multipart", "type": "text"},
+                {"key": "stock", "value": "8", "type": "text"},
+                {"key": "descuentoPorcentaje", "value": "15", "type": "text"},
+                {"key": "image", "type": "file", "src": ""}
               ]
             },
             "url": "{{baseUrl}}/api/productos"
@@ -842,7 +1151,7 @@
           "name": "GET /api/productos?usuario=:id",
           "request": {
             "method": "GET",
-            "url": "{{baseUrl}}/api/productos?usuario={{usuarioId}}"
+            "url": "{{baseUrl}}/api/productos?usuario=2"
           }
         },
         {
@@ -864,7 +1173,10 @@
           "request": {
             "method": "PUT",
             "header": [
-              { "key": "Content-Type", "value": "application/json" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
@@ -880,13 +1192,13 @@
             "body": {
               "mode": "formdata",
               "formdata": [
-                { "key": "categoriaId", "value": "{{categoriaAId}}", "type": "text" },
-                { "key": "nombre", "value": "Postman Producto 3 Actualizado", "type": "text" },
-                { "key": "precio", "value": "39.90", "type": "text" },
-                { "key": "descripcion", "value": "Producto multipart actualizado", "type": "text" },
-                { "key": "stock", "value": "9", "type": "text" },
-                { "key": "descuentoPorcentaje", "value": "20", "type": "text" },
-                { "key": "image", "type": "file", "src": "" }
+                {"key": "categoriaId", "value": "{{categoriaAId}}", "type": "text"},
+                {"key": "nombre", "value": "Postman Producto 3 Actualizado", "type": "text"},
+                {"key": "precio", "value": "39.90", "type": "text"},
+                {"key": "descripcion", "value": "Producto multipart actualizado", "type": "text"},
+                {"key": "stock", "value": "9", "type": "text"},
+                {"key": "descuentoPorcentaje", "value": "20", "type": "text"},
+                {"key": "image", "type": "file", "src": ""}
               ]
             },
             "url": "{{baseUrl}}/api/productos/{{producto3Id}}"
@@ -903,6 +1215,10 @@
     },
     {
       "name": "Carrito",
+      "auth": {
+        "type": "bearer",
+        "bearer": [{"key": "token", "value": "{{buyerToken}}", "type": "string"}]
+      },
       "item": [
         {
           "name": "POST /api/carrito",
@@ -912,6 +1228,7 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
+                  "pm.test('status 201', function () { pm.response.to.have.status(201); });",
                   "const data = pm.response.json();",
                   "pm.collectionVariables.set('carritoId', data.id);"
                 ]
@@ -921,7 +1238,10 @@
           "request": {
             "method": "POST",
             "header": [
-              { "key": "Content-Type", "value": "application/json" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
@@ -949,7 +1269,10 @@
           "request": {
             "method": "PUT",
             "header": [
-              { "key": "Content-Type", "value": "application/json" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
@@ -966,6 +1289,7 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
+                  "pm.test('status 201', function () { pm.response.to.have.status(201); });",
                   "const data = pm.response.json();",
                   "pm.collectionVariables.set('itemId', data.id);"
                 ]
@@ -975,7 +1299,10 @@
           "request": {
             "method": "POST",
             "header": [
-              { "key": "Content-Type", "value": "application/json" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
@@ -989,7 +1316,10 @@
           "request": {
             "method": "POST",
             "header": [
-              { "key": "Content-Type", "value": "application/json" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
@@ -1010,7 +1340,10 @@
           "request": {
             "method": "PUT",
             "header": [
-              { "key": "Content-Type", "value": "application/json" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
@@ -1022,61 +1355,11 @@
       ]
     },
     {
-      "name": "Usuarios",
-      "item": [
-        {
-          "name": "GET /api/users",
-          "request": {
-            "method": "GET",
-            "url": "{{baseUrl}}/api/users"
-          }
-        },
-        {
-          "name": "GET /api/users/:id",
-          "request": {
-            "method": "GET",
-            "url": "{{baseUrl}}/api/users/{{usuarioId}}"
-          }
-        },
-        {
-          "name": "PUT /api/users/:id",
-          "request": {
-            "method": "PUT",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"telefono\": \"999999\"\n}"
-            },
-            "url": "{{baseUrl}}/api/users/{{usuarioId}}"
-          }
-        },
-        {
-          "name": "GET /api/users/:id/compras (debe 403)",
-          "request": {
-            "method": "GET",
-            "url": "{{baseUrl}}/api/users/{{usuarioId}}/compras"
-          }
-        },
-        {
-          "name": "GET /api/users/:id/carrito (debe 403)",
-          "request": {
-            "method": "GET",
-            "url": "{{baseUrl}}/api/users/{{usuarioId}}/carrito"
-          }
-        },
-        {
-          "name": "GET /api/users/:id/direcciones (debe 403)",
-          "request": {
-            "method": "GET",
-            "url": "{{baseUrl}}/api/users/{{usuarioId}}/direcciones"
-          }
-        }
-      ]
-    },
-    {
       "name": "Compras",
+      "auth": {
+        "type": "bearer",
+        "bearer": [{"key": "token", "value": "{{buyerToken}}", "type": "string"}]
+      },
       "item": [
         {
           "name": "POST /api/compras/:idCarrito",
@@ -1086,6 +1369,7 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
+                  "pm.test('status 201', function () { pm.response.to.have.status(201); });",
                   "const data = pm.response.json();",
                   "pm.collectionVariables.set('compraId', data.id);"
                 ]
@@ -1095,7 +1379,10 @@
           "request": {
             "method": "POST",
             "header": [
-              { "key": "Content-Type", "value": "application/json" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
@@ -1124,32 +1411,55 @@
             "method": "GET",
             "url": "{{baseUrl}}/api/compras/{{compraId}}/detalle"
           }
-        },
+        }
+      ]
+    },
+    {
+      "name": "Usuarios",
+      "auth": {
+        "type": "bearer",
+        "bearer": [{"key": "token", "value": "{{adminToken}}", "type": "string"}]
+      },
+      "item": [
         {
-          "name": "PUT /api/compras/:id (debe 403)",
+          "name": "GET /api/users",
           "request": {
-            "method": "PUT",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"idEstado\": {{estadoId}}\n}"
-            },
-            "url": "{{baseUrl}}/api/compras/{{compraId}}"
+            "method": "GET",
+            "url": "{{baseUrl}}/api/users"
           }
         },
         {
-          "name": "DELETE /api/compras/:id (debe 403)",
+          "name": "GET /api/users/:id",
           "request": {
-            "method": "DELETE",
-            "url": "{{baseUrl}}/api/compras/{{compraId}}"
+            "method": "GET",
+            "url": "{{baseUrl}}/api/users/{{usuarioId}}"
+          }
+        },
+        {
+          "name": "PUT /api/users/:id",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"telefono\": \"999999\"\n}"
+            },
+            "url": "{{baseUrl}}/api/users/{{usuarioId}}"
           }
         }
       ]
     },
     {
       "name": "Detalle Compras",
+      "auth": {
+        "type": "bearer",
+        "bearer": [{"key": "token", "value": "{{adminToken}}", "type": "string"}]
+      },
       "item": [
         {
           "name": "POST /api/detalle-compras (main)",
@@ -1169,7 +1479,10 @@
           "request": {
             "method": "POST",
             "header": [
-              { "key": "Content-Type", "value": "application/json" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
@@ -1196,7 +1509,10 @@
           "request": {
             "method": "POST",
             "header": [
-              { "key": "Content-Type", "value": "application/json" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
@@ -1224,7 +1540,10 @@
           "request": {
             "method": "PUT",
             "header": [
-              { "key": "Content-Type", "value": "application/json" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
@@ -1259,6 +1578,10 @@
             }
           ],
           "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{"key": "token", "value": "{{adminToken}}", "type": "string"}]
+            },
             "method": "GET",
             "url": "{{baseUrl}}/api/users/999999"
           }
@@ -1277,6 +1600,10 @@
             }
           ],
           "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{"key": "token", "value": "{{adminToken}}", "type": "string"}]
+            },
             "method": "GET",
             "url": "{{baseUrl}}/api/users/abc"
           }
@@ -1285,6 +1612,10 @@
     },
     {
       "name": "Cleanup (opcionales)",
+      "auth": {
+        "type": "bearer",
+        "bearer": [{"key": "token", "value": "{{buyerToken}}", "type": "string"}]
+      },
       "item": [
         {
           "name": "DELETE /api/carrito/items/:itemId",

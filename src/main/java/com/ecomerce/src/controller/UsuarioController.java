@@ -15,12 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ecomerce.src.dto.UserRequest;
 import com.ecomerce.src.dto.UserResponse;
-import com.ecomerce.src.entity.Carrito;
-import com.ecomerce.src.entity.Compra;
-import com.ecomerce.src.entity.DireccionEnvio;
-import com.ecomerce.src.service.CarritoService;
-import com.ecomerce.src.service.CompraService;
-import com.ecomerce.src.service.DireccionEnvioService;
 import com.ecomerce.src.service.UserService;
 
 @RestController
@@ -30,15 +24,6 @@ public class UsuarioController {
     @Autowired
     private UserService userService;
 
-    @Autowired
-    private CompraService compraService;
-
-    @Autowired
-    private CarritoService carritoService;
-
-    @Autowired
-    private DireccionEnvioService direccionEnvioService;
-
     @GetMapping
     public ResponseEntity<List<UserResponse>> getUsers(
         @RequestParam(required=false) String rol,
@@ -47,6 +32,16 @@ public class UsuarioController {
     ) {
         List<UserResponse> users = this.userService.getUsers(rol, ciudad, codigopostal);
         return ResponseEntity.ok(users);
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<UserResponse> getCurrentUser() {
+        return ResponseEntity.ok(this.userService.getCurrentUser());
+    }
+
+    @PutMapping("/me")
+    public ResponseEntity<UserResponse> updateCurrentUser(@RequestBody UserRequest userDetails) {
+        return ResponseEntity.ok(this.userService.updateCurrentUser(userDetails));
     }
 
     @GetMapping("/{id}")
@@ -65,25 +60,5 @@ public class UsuarioController {
     public ResponseEntity<Void> deleteUser(@PathVariable Integer id) {
         this.userService.deleteUser(id);
         return ResponseEntity.noContent().build();
-    }
-
-    @GetMapping("/{id}/compras")
-    public ResponseEntity<?> getUserCompras(@PathVariable Integer id) {
-        this.userService.getUserById(id);
-
-        List<Compra> comprasPorUsuario = this.compraService.listarPorUsuario(id);
-        return ResponseEntity.ok(comprasPorUsuario);
-    }
-
-    @GetMapping("/{id}/carrito")
-    public ResponseEntity<List<Carrito>> getUserCarrito(@PathVariable Integer id) {
-        this.userService.getUserById(id);
-        return ResponseEntity.ok(this.carritoService.listarPorUsuario(id));
-    }
-
-    @GetMapping("/{id}/direcciones")
-    public ResponseEntity<List<DireccionEnvio>> getUserDirecciones(@PathVariable Integer id) {
-        this.userService.getUserById(id);
-        return ResponseEntity.ok(this.direccionEnvioService.listarPorUsuario(id));
     }
 }
