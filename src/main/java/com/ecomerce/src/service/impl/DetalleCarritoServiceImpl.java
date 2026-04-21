@@ -40,19 +40,23 @@ public class DetalleCarritoServiceImpl implements DetalleCarritoService {
 
 	@Override
 	public DetalleCarrito obtenerItem(Integer idItem) {
-		return detalleCarritoRepository.findById(idItem)
+		DetalleCarrito item = detalleCarritoRepository.findById(idItem)
 				.orElseThrow(() -> new ResourceNotFoundException("No existe el item del carrito con id " + idItem));
+		validateCurrentUserOwnsCarrito(item.getCarrito());
+		return item;
 	}
 
 	@Override
 	public DetalleCarrito crear(DetalleCarritoRequest request) {
 		Carrito carrito = validateOwnedCarrito(request.getIdCarrito());
 
-		Product producto = productRepository.findById(request.getIdProducto())
+		Product producto = productRepository.findByIdAndActivoTrue(request.getIdProducto())
 				.orElseThrow(() -> new ResourceNotFoundException("No existe el producto con id " + request.getIdProducto()));
 
+		validateStock(producto, request.getCantidad());
+
 		DetalleCarrito detalleCarrito = new DetalleCarrito(carrito, producto, request.getCantidad(),
-				request.getPrecioUnitario());
+				producto.getPrecioFinal());
 		return detalleCarritoRepository.save(detalleCarrito);
 	}
 
@@ -68,15 +72,24 @@ public class DetalleCarritoServiceImpl implements DetalleCarritoService {
 		}
 
 		if (!detalleCarrito.getProducto().getId().equals(request.getIdProducto())) {
-			Product producto = productRepository.findById(request.getIdProducto())
+			Product producto = productRepository.findByIdAndActivoTrue(request.getIdProducto())
 					.orElseThrow(() -> new ResourceNotFoundException("No existe el producto con id " + request.getIdProducto()));
 			detalleCarrito.setProducto(producto);
 		}
 
+		validateStock(detalleCarrito.getProducto(), request.getCantidad());
+
 		detalleCarrito.setCantidad(request.getCantidad());
-		detalleCarrito.setPrecioUnitario(request.getPrecioUnitario());
+		detalleCarrito.setPrecioUnitario(detalleCarrito.getProducto().getPrecioFinal());
 
 		return detalleCarritoRepository.save(detalleCarrito);
+	}
+
+	private void validateStock(Product producto, Integer cantidad) {
+		if (producto.getStock() == null || producto.getStock() < cantidad) {
+			throw new IllegalArgumentException("Stock insuficiente para el producto '" + producto.getNombre() + "'. Disponible: "
+					+ (producto.getStock() == null ? 0 : producto.getStock()));
+		}
 	}
 
 	@Override

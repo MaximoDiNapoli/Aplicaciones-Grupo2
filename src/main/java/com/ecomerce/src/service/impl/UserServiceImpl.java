@@ -63,8 +63,13 @@ public class UserServiceImpl implements UserService {
 
         if (userDetails.getNombre() != null)
             usuario.setNombre(userDetails.getNombre());
-        if (userDetails.getEmail() != null)
-            usuario.setEmail(userDetails.getEmail());
+        if (userDetails.getEmail() != null) {
+            String nuevoEmail = userDetails.getEmail();
+            if (!nuevoEmail.equals(usuario.getEmail()) && userRepository.existsByEmail(nuevoEmail)) {
+                throw new IllegalArgumentException("Ya existe un usuario con ese email");
+            }
+            usuario.setEmail(nuevoEmail);
+        }
         if (userDetails.getTelefono() != null)
             usuario.setTelefono(userDetails.getTelefono());
         if (userDetails.getRol() != null) {

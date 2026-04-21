@@ -47,7 +47,6 @@ public class EstadoServiceImpl implements EstadoService {
 	@Override
 	public void eliminar(Integer id) {
 		Estado estado = obtenerPorId(id);
-		estado.setNombre("Eliminado");
-		estadoRepository.save(estado);
+		estadoRepository.delete(estado);
 	}
 }

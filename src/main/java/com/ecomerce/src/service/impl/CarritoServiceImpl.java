@@ -4,12 +4,14 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.ecomerce.src.dto.CarritoRequest;
 import com.ecomerce.src.entity.Carrito;
 import com.ecomerce.src.entity.User;
 import com.ecomerce.src.exception.ResourceNotFoundException;
 import com.ecomerce.src.repository.CarritoRepository;
+import com.ecomerce.src.repository.DetalleCarritoRepository;
 import com.ecomerce.src.repository.UserRepository;
 import com.ecomerce.src.security.CurrentUserService;
 import com.ecomerce.src.service.CarritoService;
@@ -18,11 +20,14 @@ import com.ecomerce.src.service.CarritoService;
 public class CarritoServiceImpl implements CarritoService {
 
 	private final CarritoRepository carritoRepository;
+	private final DetalleCarritoRepository detalleCarritoRepository;
 	private final UserRepository userRepository;
 	private final CurrentUserService currentUserService;
 
-	public CarritoServiceImpl(CarritoRepository carritoRepository, UserRepository userRepository, CurrentUserService currentUserService) {
+	public CarritoServiceImpl(CarritoRepository carritoRepository, DetalleCarritoRepository detalleCarritoRepository,
+			UserRepository userRepository, CurrentUserService currentUserService) {
 		this.carritoRepository = carritoRepository;
+		this.detalleCarritoRepository = detalleCarritoRepository;
 		this.userRepository = userRepository;
 		this.currentUserService = currentUserService;
 	}
@@ -64,8 +69,10 @@ public class CarritoServiceImpl implements CarritoService {
 	}
 
 	@Override
+	@Transactional
 	public void eliminar(Integer id) {
 		Carrito carrito = obtenerPorId(id);
+		detalleCarritoRepository.deleteByCarritoId(id);
 		carritoRepository.delete(carrito);
 	}
 

@@ -46,10 +46,22 @@ public class CurrentUserService {
 	}
 
 	public boolean isAdmin() {
+		return hasRole("ROLE_ADMINISTRADOR");
+	}
+
+	public boolean isVendedor() {
+		return hasRole("ROLE_VENDEDOR");
+	}
+
+	public boolean isAdminOrVendedor() {
+		return isAdmin() || isVendedor();
+	}
+
+	private boolean hasRole(String role) {
 		Authentication authentication = getAuthentication();
 		return authentication.getAuthorities().stream()
 				.map(GrantedAuthority::getAuthority)
-				.anyMatch("ROLE_ADMINISTRADOR"::equals);
+				.anyMatch(role::equals);
 	}
 
 	private Authentication getAuthentication() {

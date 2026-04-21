@@ -11,4 +11,6 @@ import com.ecomerce.src.entity.DetalleCompra;
 public interface DetalleCompraRepository extends JpaRepository<DetalleCompra, Integer> {
 
 	List<DetalleCompra> findByIdCompra(Integer idCompra);
+
+	void deleteByIdCompra(Integer idCompra);
 }

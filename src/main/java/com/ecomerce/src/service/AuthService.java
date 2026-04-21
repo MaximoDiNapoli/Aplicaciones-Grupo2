@@ -23,8 +23,10 @@ import com.ecomerce.src.security.JwtService;
 public class AuthService {
 
 	private static final String ROLE_ADMINISTRADOR = "ADMINISTRADOR";
+	private static final String ROLE_VENDEDOR = "VENDEDOR";
 	private static final String DEFAULT_ROLE = "COMPRADOR";
 	private static final Set<String> ALLOWED_ROLES = Set.of("COMPRADOR", "VENDEDOR", "ADMINISTRADOR", "USER");
+	private static final Set<String> PRIVILEGED_ROLES = Set.of(ROLE_ADMINISTRADOR, ROLE_VENDEDOR);
 
 	private final UserRepository userRepository;
 	private final PasswordEncoder passwordEncoder;
@@ -48,8 +50,8 @@ public class AuthService {
 		}
 
 		String requestedRole = resolveRequestedRole(request.getRol());
-		if (ROLE_ADMINISTRADOR.equals(requestedRole) && !isAuthenticatedAdmin()) {
-			throw new AccessDeniedException("Solo un administrador puede crear usuarios administradores");
+		if (PRIVILEGED_ROLES.contains(requestedRole) && !isAuthenticatedAdmin()) {
+			throw new AccessDeniedException("Solo un administrador puede crear usuarios con rol " + requestedRole);
 		}
 
 		User user = new User();
