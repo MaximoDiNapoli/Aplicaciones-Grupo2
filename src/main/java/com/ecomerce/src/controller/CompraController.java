@@ -46,6 +46,11 @@ public class CompraController {
 		return ResponseEntity.ok(compraService.listarMisCompras());
 	}
 
+	@GetMapping("/users/{idUsuario}/compras")
+	public ResponseEntity<List<Compra>> listarPorUsuario(@PathVariable Integer idUsuario) {
+		return ResponseEntity.ok(compraService.listarPorUsuario(idUsuario));
+	}
+
 	@GetMapping("/compras/{id}")
 	public ResponseEntity<Compra> obtenerPorId(@PathVariable Integer id) {
 		return ResponseEntity.ok(compraService.obtenerPorId(id));

@@ -1712,6 +1712,26 @@
           }
         },
         {
+          "name": "GET /api/users/:idUsuario/compras",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 200', function () { pm.response.to.have.status(200); });",
+                  "pm.test('Respuesta es array', function () { pm.expect(pm.response.json()).to.be.an('array'); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/users/{{usuarioId}}/compras",
+            "description": "Lista compras de un usuario especifico (solo admin/propio usuario)"
+          }
+        },
+        {
           "name": "GET /api/compras/:id",
           "request": {
             "method": "GET",
@@ -1947,14 +1967,16 @@
           "name": "GET /api/detalle-compras",
           "request": {
             "method": "GET",
-            "url": "{{baseUrl}}/api/detalle-compras"
+            "url": "{{baseUrl}}/api/detalle-compras",
+            "description": "Lista los detalles de compra del usuario autenticado. Admin ve todos."
           }
         },
         {
           "name": "GET /api/detalle-compras/:id",
           "request": {
             "method": "GET",
-            "url": "{{baseUrl}}/api/detalle-compras/{{detalleCompraId}}"
+            "url": "{{baseUrl}}/api/detalle-compras/{{detalleCompraId}}",
+            "description": "Obtiene un detalle de compra. Solo accesible si la compra pertenece al usuario autenticado, o si es admin."
           }
         },
         {

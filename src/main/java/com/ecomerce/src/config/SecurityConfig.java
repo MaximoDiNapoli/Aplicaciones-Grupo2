@@ -63,6 +63,7 @@ public class SecurityConfig {
 						.requestMatchers(HttpMethod.PUT, "/api/detalle-compras", "/api/detalle-compras/**").hasRole("ADMINISTRADOR")
 						.requestMatchers(HttpMethod.DELETE, "/api/detalle-compras", "/api/detalle-compras/**").hasRole("ADMINISTRADOR")
 						.requestMatchers("/api/users/me").authenticated()
+						.requestMatchers(HttpMethod.GET, "/api/users/*/compras").authenticated()
 						.requestMatchers("/api/users", "/api/users/**").hasRole("ADMINISTRADOR")
 						.anyRequest().authenticated())
 				.sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
