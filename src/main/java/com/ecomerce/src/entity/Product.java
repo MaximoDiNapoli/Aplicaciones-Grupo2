@@ -53,7 +53,6 @@ public class Product extends BaseEntity {
 
 	@Lob
 	@Basic(fetch = FetchType.LAZY)
-	@JsonIgnore
 	private byte[] foto;
 
 	@Column(nullable = false)

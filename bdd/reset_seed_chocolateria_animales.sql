@@ -24,11 +24,11 @@ INSERT INTO usuario (nombre, email, telefono, password_hash, rol) VALUES
 ('Valentina Ruiz', 'valentina@cliente.com', '1141003000', '$2a$10$DS.n4kk3ucs5ZgoU5Q0o5eVvqTDRUHP/dkwe3apvOIZbnD0a43dOe', 'COMPRADOR');
 
 -- Catalogo
-INSERT INTO categoria (nombre, descripcion) VALUES
-('Figuras de Animales', 'Chocolates con formas clasicas de animales'),
-('Coleccion Selva', 'Linea premium inspirada en fauna de selva'),
-('Regalos y Packs', 'Combos y cajas para regalo'),
-('Edicion Pascua', 'Especiales de temporada pascual');
+INSERT INTO categoria (nombre) VALUES
+('Figuras de Animales'),
+('Coleccion Selva'),
+('Regalos y Packs'),
+('Edicion Pascua');
 
 INSERT INTO estado (nombre, descripcion) VALUES
 ('PENDIENTE', 'Compra creada y pendiente de pago'),

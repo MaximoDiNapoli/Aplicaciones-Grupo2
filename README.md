@@ -45,9 +45,8 @@ https://github.com/MaximoDiNapoli/Aplicaciones-Grupo2
 - Usuario: `ecomerce`
 - Password: `ecomerce123`
 
-## Documentación de entrega
+#Opcional
 
-- Guía de roles y pruebas manuales: [docs/roles-y-pruebas.md](docs/roles-y-pruebas.md)
-- Documento de arquitectura, DER mapeado y endpoints: [docs/entrega-tecnica.md](docs/entrega-tecnica.md)
-- Guía de capturas de evidencias: [docs/evidencias/README.md](docs/evidencias/README.md)
+Existen scrips para poblar la bdd para poder realizar pruebas rapidas, bdd\reset_seed_chocolateria_animales.sql
+
 

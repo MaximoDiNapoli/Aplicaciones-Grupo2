@@ -3,9 +3,10 @@ package com.ecomerce.src.service;
 import java.math.BigDecimal;
 import java.util.List;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import com.ecomerce.src.dto.ProductRequest;
 import com.ecomerce.src.entity.Product;
-import org.springframework.web.multipart.MultipartFile;
 
 public interface ProductService {
 

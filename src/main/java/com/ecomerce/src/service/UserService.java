@@ -1,9 +1,9 @@
 package com.ecomerce.src.service;
 
+import java.util.List;
+
 import com.ecomerce.src.dto.UserRequest;
 import com.ecomerce.src.dto.UserResponse;
-
-import java.util.List;
 
 public interface UserService {
 

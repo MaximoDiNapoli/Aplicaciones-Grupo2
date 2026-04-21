@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -50,6 +51,19 @@ public class ProductoController {
 	@GetMapping("/{id}")
 	public ResponseEntity<Product> obtenerPorId(@PathVariable Integer id) {
 		return ResponseEntity.ok(productService.obtenerPorId(id));
+	}
+
+	@GetMapping(value = "/{id}/foto", produces = MediaType.IMAGE_JPEG_VALUE)
+	public ResponseEntity<byte[]> obtenerFoto(@PathVariable Integer id) {
+		byte[] foto = productService.obtenerPorId(id).getFoto();
+		if (foto == null || foto.length == 0) {
+			return ResponseEntity.notFound().build();
+		}
+
+		return ResponseEntity.ok()
+				.header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=producto-" + id + ".jpg")
+				.contentType(MediaType.IMAGE_JPEG)
+				.body(foto);
 	}
 
 	@PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
