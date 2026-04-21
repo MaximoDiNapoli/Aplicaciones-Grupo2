@@ -562,6 +562,60 @@
             },
             "url": "{{baseUrl}}/api/metodos-pago"
           }
+        },
+        {
+          "name": "POST /api/detalle-compras (comprador => 403)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 403', function () { pm.response.to.have.status(403); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{"key": "token", "value": "{{buyerToken}}", "type": "string"}]
+            },
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idCompra\": 1,\n  \"idProducto\": 1,\n  \"cantidad\": 1,\n  \"precioUnitario\": 1\n}"
+            },
+            "url": "{{baseUrl}}/api/detalle-compras"
+          }
+        },
+        {
+          "name": "POST /api/detalle-compras (vendedor => 403)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status 403', function () { pm.response.to.have.status(403); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{"key": "token", "value": "{{vendorToken}}", "type": "string"}]
+            },
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idCompra\": 1,\n  \"idProducto\": 1,\n  \"cantidad\": 1,\n  \"precioUnitario\": 1\n}"
+            },
+            "url": "{{baseUrl}}/api/detalle-compras"
+          }
         }
       ]
     },
@@ -1421,6 +1475,38 @@
         "bearer": [{"key": "token", "value": "{{adminToken}}", "type": "string"}]
       },
       "item": [
+        {
+          "name": "GET /api/users/me (comprador)",
+          "request": {
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [{"key": "token", "value": "{{buyerToken}}", "type": "string"}]
+            },
+            "url": "{{baseUrl}}/api/users/me"
+          }
+        },
+        {
+          "name": "PUT /api/users/me (comprador)",
+          "request": {
+            "method": "PUT",
+            "auth": {
+              "type": "bearer",
+              "bearer": [{"key": "token", "value": "{{buyerToken}}", "type": "string"}]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"telefono\": \"1155555555\"\n}"
+            },
+            "url": "{{baseUrl}}/api/users/me"
+          }
+        },
         {
           "name": "GET /api/users",
           "request": {
