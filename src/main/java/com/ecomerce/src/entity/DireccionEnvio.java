@@ -21,10 +21,8 @@ public class DireccionEnvio extends BaseEntity {
     @Column(name = "es_principal")
     private Boolean esPrincipal;
 
-    // Constructor vacío
     public DireccionEnvio() {}
 
-    // Constructor con parámetros
     public DireccionEnvio(Integer idUsuario, String direccion, String ciudad, String codigoPostal, Boolean esPrincipal) {
         this.idUsuario = idUsuario;
         this.direccion = direccion;
@@ -33,7 +31,6 @@ public class DireccionEnvio extends BaseEntity {
         this.esPrincipal = esPrincipal;
     }
 
-    // Getters y Setters
     public Integer getIdUsuario() { return idUsuario; }
     public void setIdUsuario(Integer idUsuario) { this.idUsuario = idUsuario; }
 

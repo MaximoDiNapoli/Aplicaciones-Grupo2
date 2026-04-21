@@ -30,7 +30,6 @@ public class DetalleCarritoServiceImpl implements DetalleCarritoService {
 
 	@Override
 	public List<DetalleCarrito> obtenerItemsPorCarrito(Integer idCarrito) {
-		// Verificar que el carrito existe
 		carritoRepository.findById(idCarrito)
 				.orElseThrow(() -> new ResourceNotFoundException("No existe el carrito con id " + idCarrito));
 		return detalleCarritoRepository.findByCarritoId(idCarrito);
@@ -60,7 +59,6 @@ public class DetalleCarritoServiceImpl implements DetalleCarritoService {
 		DetalleCarrito detalleCarrito = detalleCarritoRepository.findById(idItem)
 				.orElseThrow(() -> new ResourceNotFoundException("No existe el item del carrito con id " + idItem));
 
-		// Verificar que el carrito existe si se está actualizando
 		if (request.getIdCarrito() != null && !detalleCarrito.getCarrito().getId().equals(request.getIdCarrito())) {
 			carritoRepository.findById(request.getIdCarrito())
 					.orElseThrow(() -> new ResourceNotFoundException("No existe el carrito con id " + request.getIdCarrito()));
@@ -68,7 +66,6 @@ public class DetalleCarritoServiceImpl implements DetalleCarritoService {
 			detalleCarrito.setCarrito(carrito);
 		}
 
-		// Verificar que el producto existe
 		if (!detalleCarrito.getProducto().getId().equals(request.getIdProducto())) {
 			Product producto = productRepository.findById(request.getIdProducto())
 					.orElseThrow(() -> new ResourceNotFoundException("No existe el producto con id " + request.getIdProducto()));

@@ -49,32 +49,26 @@ public class UsuarioController {
         return ResponseEntity.ok(users);
     }
 
-    // GET /api/users/{id}
     @GetMapping("/{id}")
     public ResponseEntity<UserResponse> getUserById(@PathVariable Integer id) {
         UserResponse user = this.userService.getUserById(id);
         return ResponseEntity.ok(user);
     }
 
-    // PUT /api/users/{id}
     @PutMapping("/{id}")
     public ResponseEntity<UserResponse> updateUser(@PathVariable Integer id, @RequestBody UserRequest userDetails) {
         UserResponse usuarioUpdated = this.userService.updateUser(id, userDetails);
         return ResponseEntity.ok(usuarioUpdated);
     }
 
-    // DELETE /api/users/{id}
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Integer id) {
         this.userService.deleteUser(id);
         return ResponseEntity.noContent().build();
     }
 
-    // --- Endpoints de Relaciones ---
-
     @GetMapping("/{id}/compras")
     public ResponseEntity<?> getUserCompras(@PathVariable Integer id) {
-        // Lógica para traer compras del usuario
         this.userService.getUserById(id);
 
         List<Compra> comprasPorUsuario = this.compraService.listarPorUsuario(id);

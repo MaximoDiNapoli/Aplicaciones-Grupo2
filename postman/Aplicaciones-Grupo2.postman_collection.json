@@ -828,6 +828,13 @@
           }
         },
         {
+          "name": "GET /api/productos/:id/foto",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/productos/{{producto3Id}}/foto"
+          }
+        },
+        {
           "name": "GET /api/productos?categoria=:id",
           "request": {
             "method": "GET",
