@@ -2,8 +2,8 @@ package com.ecomerce.src.controller;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,12 +17,18 @@ import com.ecomerce.src.dto.UserRequest;
 import com.ecomerce.src.dto.UserResponse;
 import com.ecomerce.src.service.UserService;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/api/users")
+@Validated
 public class UsuarioController {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+
+    public UsuarioController(UserService userService) {
+        this.userService = userService;
+    }
 
     @GetMapping
     public ResponseEntity<List<UserResponse>> getUsers(
@@ -40,7 +46,7 @@ public class UsuarioController {
     }
 
     @PutMapping("/me")
-    public ResponseEntity<UserResponse> updateCurrentUser(@RequestBody UserRequest userDetails) {
+    public ResponseEntity<UserResponse> updateCurrentUser(@Valid @RequestBody UserRequest userDetails) {
         return ResponseEntity.ok(this.userService.updateCurrentUser(userDetails));
     }
 
@@ -51,7 +57,7 @@ public class UsuarioController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserResponse> updateUser(@PathVariable Integer id, @RequestBody UserRequest userDetails) {
+    public ResponseEntity<UserResponse> updateUser(@PathVariable Integer id, @Valid @RequestBody UserRequest userDetails) {
         UserResponse usuarioUpdated = this.userService.updateUser(id, userDetails);
         return ResponseEntity.ok(usuarioUpdated);
     }

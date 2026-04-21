@@ -89,7 +89,7 @@ public class ProductoController {
 		return ResponseEntity.ok(productService.actualizar(id, request));
 	}
 
-	@PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	@PutMapping(value = "/{id}/imagen", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	public ResponseEntity<Product> actualizarConImagen(
 			@PathVariable Integer id,
 			@RequestParam(required = false) Integer categoriaId,
