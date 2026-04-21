@@ -64,7 +64,7 @@ public class AuthService {
 				.withUsername(user.getEmail())
 				.password(user.getPasswordHash())
 				.roles(requestedRole)
-				.build());
+				.build(), user.getId());
 		return new AuthResponse(token, "Bearer");
 	}
 
@@ -79,7 +79,7 @@ public class AuthService {
 				.withUsername(user.getEmail())
 				.password(user.getPasswordHash())
 				.roles(role)
-				.build());
+				.build(), user.getId());
 		return new AuthResponse(token, "Bearer");
 	}
 

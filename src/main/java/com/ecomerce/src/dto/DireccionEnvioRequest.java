@@ -1,13 +1,9 @@
 package com.ecomerce.src.dto;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 public class DireccionEnvioRequest {
-
-    @NotNull(message = "idUsuario es requerido")
-    private Integer idUsuario;
 
     @NotBlank(message = "direccion es requerida")
     @Size(max = 255, message = "direccion no puede exceder 255 caracteres")
@@ -21,14 +17,6 @@ public class DireccionEnvioRequest {
     private String codigoPostal;
 
     private Boolean esPrincipal;
-
-    public Integer getIdUsuario() {
-        return idUsuario;
-    }
-
-    public void setIdUsuario(Integer idUsuario) {
-        this.idUsuario = idUsuario;
-    }
 
     public String getDireccion() {
         return direccion;

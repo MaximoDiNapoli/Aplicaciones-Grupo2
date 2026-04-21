@@ -8,9 +8,6 @@ import java.util.Locale;
 
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,18 +16,18 @@ import com.ecomerce.src.entity.Product;
 import com.ecomerce.src.entity.User;
 import com.ecomerce.src.exception.ResourceNotFoundException;
 import com.ecomerce.src.repository.ProductRepository;
-import com.ecomerce.src.repository.UserRepository;
+import com.ecomerce.src.security.CurrentUserService;
 import com.ecomerce.src.service.ProductService;
 
 @Service
 public class ProductServiceImpl implements ProductService {
 
 	private final ProductRepository productRepository;
-	private final UserRepository userRepository;
+	private final CurrentUserService currentUserService;
 
-	public ProductServiceImpl(ProductRepository productRepository, UserRepository userRepository) {
+	public ProductServiceImpl(ProductRepository productRepository, CurrentUserService currentUserService) {
 		this.productRepository = productRepository;
-		this.userRepository = userRepository;
+		this.currentUserService = currentUserService;
 	}
 
 	@Override
@@ -71,8 +68,11 @@ public class ProductServiceImpl implements ProductService {
 
 	@Override
 	public Product crear(ProductRequest request, MultipartFile image) {
-		validatePublisherRole(request.getUsuarioId());
+		User authenticatedUser = currentUserService.getCurrentUser();
+		validatePublisherRole(authenticatedUser);
 		Product product = new Product();
+		product.setUsuarioId(authenticatedUser.getId());
+		product.setUsuario(authenticatedUser);
 		applyRequest(product, request);
 		product.setActivo(true);
 		applyImage(product, image);
@@ -83,12 +83,6 @@ public class ProductServiceImpl implements ProductService {
 	public Product actualizar(Integer id, ProductRequest request) {
 		Product product = obtenerPorId(id);
 		validateAuthenticatedUserCanManageProduct(product);
-		if (!isAuthenticatedAdmin() && request.getUsuarioId() != null && !request.getUsuarioId().equals(product.getUsuarioId())) {
-			throw new AccessDeniedException("No tiene permisos para transferir la propiedad del producto");
-		}
-		if (request.getUsuarioId() == null) {
-			request.setUsuarioId(product.getUsuarioId());
-		}
 		applyRequest(product, request);
 		return productRepository.save(product);
 	}
@@ -97,12 +91,6 @@ public class ProductServiceImpl implements ProductService {
 	public Product actualizar(Integer id, ProductRequest request, MultipartFile image) {
 		Product product = obtenerPorId(id);
 		validateAuthenticatedUserCanManageProduct(product);
-		if (!isAuthenticatedAdmin() && request.getUsuarioId() != null && !request.getUsuarioId().equals(product.getUsuarioId())) {
-			throw new AccessDeniedException("No tiene permisos para transferir la propiedad del producto");
-		}
-		if (request.getUsuarioId() == null) {
-			request.setUsuarioId(product.getUsuarioId());
-		}
 		applyRequest(product, request);
 		applyImage(product, image);
 		return productRepository.save(product);
@@ -117,24 +105,19 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	private void validateAuthenticatedUserCanManageProduct(Product product) {
+		if (currentUserService.isAdmin()) {
+			return;
+		}
+
 		Integer ownerUserId = product.getUsuarioId();
 		if (ownerUserId == null) {
 			throw new IllegalArgumentException("El producto no tiene un usuario propietario asignado");
 		}
 
-		User owner = userRepository.findById(ownerUserId)
-				.orElseThrow(() -> new ResourceNotFoundException("No existe el usuario con id " + ownerUserId));
-		validateAuthenticatedUserCanPublish(owner);
-	}
-
-	private boolean isAuthenticatedAdmin() {
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		if (authentication == null || !authentication.isAuthenticated()) {
-			return false;
+		Integer currentUserId = currentUserService.getCurrentUserId();
+		if (!currentUserId.equals(ownerUserId)) {
+			throw new AccessDeniedException("No tiene permisos para administrar este producto");
 		}
-		return authentication.getAuthorities().stream()
-				.map(GrantedAuthority::getAuthority)
-				.anyMatch("ROLE_ADMINISTRADOR"::equals);
 	}
 
 	private Specification<Product> activos() {
@@ -155,12 +138,6 @@ public class ProductServiceImpl implements ProductService {
 
 	private void applyRequest(Product product, ProductRequest request) {
 		validateDiscountDates(request.getDescuentoPorcentaje(), request.getDescuentoInicio(), request.getDescuentoFin());
-
-		User usuario = userRepository.findById(request.getUsuarioId())
-				.orElseThrow(() -> new ResourceNotFoundException("No existe el usuario con id " + request.getUsuarioId()));
-
-		product.setUsuario(usuario);
-		product.setUsuarioId(request.getUsuarioId());
 		product.setCategoriaId(request.getCategoriaId());
 		product.setNombre(request.getNombre());
 		product.setPrecio(request.getPrecio());
@@ -171,33 +148,10 @@ public class ProductServiceImpl implements ProductService {
 		product.setDescuentoFin(request.getDescuentoFin());
 	}
 
-	private void validatePublisherRole(Integer usuarioId) {
-		User usuario = userRepository.findById(usuarioId)
-				.orElseThrow(() -> new ResourceNotFoundException("No existe el usuario con id " + usuarioId));
+	private void validatePublisherRole(User usuario) {
 		String rol = usuario.getRol() == null ? "" : usuario.getRol().trim().toUpperCase(Locale.ROOT);
 		if (!"VENDEDOR".equals(rol) && !"ADMINISTRADOR".equals(rol)) {
 			throw new IllegalArgumentException("Solo usuarios con rol VENDEDOR o ADMINISTRADOR pueden publicar productos");
-		}
-		validateAuthenticatedUserCanPublish(usuario);
-	}
-
-	private void validateAuthenticatedUserCanPublish(User usuario) {
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		if (authentication == null || !authentication.isAuthenticated()) {
-			throw new AccessDeniedException("No autenticado");
-		}
-
-		boolean isAdmin = authentication.getAuthorities().stream()
-				.map(GrantedAuthority::getAuthority)
-				.anyMatch("ROLE_ADMINISTRADOR"::equals);
-		if (isAdmin) {
-			return;
-		}
-
-		String authenticatedEmail = authentication.getName() == null ? "" : authentication.getName().trim();
-		String requestedEmail = usuario.getEmail() == null ? "" : usuario.getEmail().trim();
-		if (!authenticatedEmail.equalsIgnoreCase(requestedEmail)) {
-			throw new AccessDeniedException("No tiene permisos para publicar productos en nombre de otro usuario");
 		}
 	}
 

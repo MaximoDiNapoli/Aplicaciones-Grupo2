@@ -68,7 +68,6 @@ public class ProductoController {
 
 	@PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	public ResponseEntity<Product> crearConImagen(
-			@RequestParam Integer usuarioId,
 			@RequestParam(required = false) Integer categoriaId,
 			@RequestParam String nombre,
 			@RequestParam BigDecimal precio,
@@ -78,7 +77,7 @@ public class ProductoController {
 			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime descuentoInicio,
 			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime descuentoFin,
 			@RequestParam(value = "image", required = false) MultipartFile image) {
-		ProductRequest request = buildProductRequest(usuarioId, categoriaId, nombre, precio, descripcion, stock,
+		ProductRequest request = buildProductRequest(categoriaId, nombre, precio, descripcion, stock,
 				descuentoPorcentaje, descuentoInicio, descuentoFin);
 		Product creado = productService.crear(request, image);
 
@@ -93,7 +92,6 @@ public class ProductoController {
 	@PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	public ResponseEntity<Product> actualizarConImagen(
 			@PathVariable Integer id,
-			@RequestParam Integer usuarioId,
 			@RequestParam(required = false) Integer categoriaId,
 			@RequestParam String nombre,
 			@RequestParam BigDecimal precio,
@@ -103,7 +101,7 @@ public class ProductoController {
 			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime descuentoInicio,
 			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime descuentoFin,
 			@RequestParam(value = "image", required = false) MultipartFile image) {
-		ProductRequest request = buildProductRequest(usuarioId, categoriaId, nombre, precio, descripcion, stock,
+		ProductRequest request = buildProductRequest(categoriaId, nombre, precio, descripcion, stock,
 				descuentoPorcentaje, descuentoInicio, descuentoFin);
 		Product actualizado = productService.actualizar(id, request, image);
 
@@ -117,7 +115,6 @@ public class ProductoController {
 	}
 
 	private ProductRequest buildProductRequest(
-			Integer usuarioId,
 			Integer categoriaId,
 			String nombre,
 			BigDecimal precio,
@@ -127,7 +124,6 @@ public class ProductoController {
 			LocalDateTime descuentoInicio,
 			LocalDateTime descuentoFin) {
 		ProductRequest request = new ProductRequest();
-		request.setUsuarioId(usuarioId);
 		request.setCategoriaId(categoriaId);
 		request.setNombre(nombre);
 		request.setPrecio(precio);

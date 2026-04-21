@@ -41,9 +41,9 @@ public class CompraController {
 		return ResponseEntity.created(URI.create("/api/compras/" + creada.getId())).body(creada);
 	}
 
-	@GetMapping("/usuarios/{idUsuario}/compras")
-	public ResponseEntity<List<Compra>> listarPorUsuario(@PathVariable Integer idUsuario) {
-		return ResponseEntity.ok(compraService.listarPorUsuario(idUsuario));
+	@GetMapping("/compras")
+	public ResponseEntity<List<Compra>> listarMisCompras() {
+		return ResponseEntity.ok(compraService.listarMisCompras());
 	}
 
 	@GetMapping("/compras/{id}")

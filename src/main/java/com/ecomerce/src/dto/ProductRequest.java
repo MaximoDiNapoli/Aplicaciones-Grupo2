@@ -12,9 +12,6 @@ import jakarta.validation.constraints.Size;
 
 public class ProductRequest {
 
-	@NotNull
-	private Integer usuarioId;
-
 	private Integer categoriaId;
 
 	@NotBlank
@@ -39,14 +36,6 @@ public class ProductRequest {
 	private LocalDateTime descuentoInicio;
 
 	private LocalDateTime descuentoFin;
-
-	public Integer getUsuarioId() {
-		return usuarioId;
-	}
-
-	public void setUsuarioId(Integer usuarioId) {
-		this.usuarioId = usuarioId;
-	}
 
 	public Integer getCategoriaId() {
 		return categoriaId;

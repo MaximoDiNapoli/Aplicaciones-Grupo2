@@ -11,6 +11,8 @@ public interface CompraService {
 
 	Compra crearDesdeCarrito(Integer idCarrito, CompraRequest request);
 
+	List<Compra> listarMisCompras();
+
 	List<Compra> listarPorUsuario(Integer idUsuario);
 
 	Compra obtenerPorId(Integer id);

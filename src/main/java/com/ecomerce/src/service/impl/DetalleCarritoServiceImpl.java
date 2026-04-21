@@ -2,6 +2,7 @@ package com.ecomerce.src.service.impl;
 
 import java.util.List;
 
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import com.ecomerce.src.dto.DetalleCarritoRequest;
@@ -12,6 +13,7 @@ import com.ecomerce.src.exception.ResourceNotFoundException;
 import com.ecomerce.src.repository.CarritoRepository;
 import com.ecomerce.src.repository.DetalleCarritoRepository;
 import com.ecomerce.src.repository.ProductRepository;
+import com.ecomerce.src.security.CurrentUserService;
 import com.ecomerce.src.service.DetalleCarritoService;
 
 @Service
@@ -20,18 +22,19 @@ public class DetalleCarritoServiceImpl implements DetalleCarritoService {
 	private final DetalleCarritoRepository detalleCarritoRepository;
 	private final CarritoRepository carritoRepository;
 	private final ProductRepository productRepository;
+	private final CurrentUserService currentUserService;
 
 	public DetalleCarritoServiceImpl(DetalleCarritoRepository detalleCarritoRepository,
-			CarritoRepository carritoRepository, ProductRepository productRepository) {
+			CarritoRepository carritoRepository, ProductRepository productRepository, CurrentUserService currentUserService) {
 		this.detalleCarritoRepository = detalleCarritoRepository;
 		this.carritoRepository = carritoRepository;
 		this.productRepository = productRepository;
+		this.currentUserService = currentUserService;
 	}
 
 	@Override
 	public List<DetalleCarrito> obtenerItemsPorCarrito(Integer idCarrito) {
-		carritoRepository.findById(idCarrito)
-				.orElseThrow(() -> new ResourceNotFoundException("No existe el carrito con id " + idCarrito));
+		validateOwnedCarrito(idCarrito);
 		return detalleCarritoRepository.findByCarritoId(idCarrito);
 	}
 
@@ -43,8 +46,7 @@ public class DetalleCarritoServiceImpl implements DetalleCarritoService {
 
 	@Override
 	public DetalleCarrito crear(DetalleCarritoRequest request) {
-		Carrito carrito = carritoRepository.findById(request.getIdCarrito())
-				.orElseThrow(() -> new ResourceNotFoundException("No existe el carrito con id " + request.getIdCarrito()));
+		Carrito carrito = validateOwnedCarrito(request.getIdCarrito());
 
 		Product producto = productRepository.findById(request.getIdProducto())
 				.orElseThrow(() -> new ResourceNotFoundException("No existe el producto con id " + request.getIdProducto()));
@@ -58,11 +60,10 @@ public class DetalleCarritoServiceImpl implements DetalleCarritoService {
 	public DetalleCarrito actualizar(Integer idItem, DetalleCarritoRequest request) {
 		DetalleCarrito detalleCarrito = detalleCarritoRepository.findById(idItem)
 				.orElseThrow(() -> new ResourceNotFoundException("No existe el item del carrito con id " + idItem));
+		validateCurrentUserOwnsCarrito(detalleCarrito.getCarrito());
 
 		if (request.getIdCarrito() != null && !detalleCarrito.getCarrito().getId().equals(request.getIdCarrito())) {
-			carritoRepository.findById(request.getIdCarrito())
-					.orElseThrow(() -> new ResourceNotFoundException("No existe el carrito con id " + request.getIdCarrito()));
-			Carrito carrito = carritoRepository.findById(request.getIdCarrito()).get();
+			Carrito carrito = validateOwnedCarrito(request.getIdCarrito());
 			detalleCarrito.setCarrito(carrito);
 		}
 
@@ -82,6 +83,21 @@ public class DetalleCarritoServiceImpl implements DetalleCarritoService {
 	public void eliminar(Integer idItem) {
 		DetalleCarrito detalleCarrito = detalleCarritoRepository.findById(idItem)
 				.orElseThrow(() -> new ResourceNotFoundException("No existe el item del carrito con id " + idItem));
+		validateCurrentUserOwnsCarrito(detalleCarrito.getCarrito());
 		detalleCarritoRepository.delete(detalleCarrito);
+	}
+
+	private Carrito validateOwnedCarrito(Integer idCarrito) {
+		Carrito carrito = carritoRepository.findById(idCarrito)
+				.orElseThrow(() -> new ResourceNotFoundException("No existe el carrito con id " + idCarrito));
+		validateCurrentUserOwnsCarrito(carrito);
+		return carrito;
+	}
+
+	private void validateCurrentUserOwnsCarrito(Carrito carrito) {
+		Integer currentUserId = currentUserService.getCurrentUserId();
+		if (!currentUserId.equals(carrito.getUsuarioId())) {
+			throw new AccessDeniedException("No tiene permisos para acceder a este carrito");
+		}
 	}
 }
