@@ -47,7 +47,7 @@ public class CarritoServiceImpl implements CarritoService {
 		}
 
 		validateUserExists(request.getUsuarioId());
-		Carrito carrito = new Carrito(request.getUsuarioId(), request.getNombre(), request.getDescripcion());
+		Carrito carrito = new Carrito(request.getUsuarioId(), request.getNombre());
 		return carritoRepository.save(carrito);
 	}
 
@@ -62,7 +62,6 @@ public class CarritoServiceImpl implements CarritoService {
 		}
 
 		carrito.setNombre(request.getNombre());
-		carrito.setDescripcion(request.getDescripcion());
 
 		return carritoRepository.save(carrito);
 	}

@@ -24,16 +24,12 @@ public class Carrito extends BaseEntity {
 	@Column(nullable = false)
 	private String nombre;
 
-	@Column
-	private String descripcion;
-
 	public Carrito() {
 	}
 
-	public Carrito(Integer usuarioId, String nombre, String descripcion) {
+	public Carrito(Integer usuarioId, String nombre) {
 		this.usuarioId = usuarioId;
 		this.nombre = nombre;
-		this.descripcion = descripcion;
 	}
 
 	public Integer getUsuarioId() {
@@ -58,13 +54,5 @@ public class Carrito extends BaseEntity {
 
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
-	}
-
-	public String getDescripcion() {
-		return descripcion;
-	}
-
-	public void setDescripcion(String descripcion) {
-		this.descripcion = descripcion;
 	}
 }

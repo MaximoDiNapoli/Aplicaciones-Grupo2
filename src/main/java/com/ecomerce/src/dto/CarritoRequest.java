@@ -11,9 +11,6 @@ public class CarritoRequest {
 	@Size(max = 255)
 	private String nombre;
 
-	@Size(max = 2000)
-	private String descripcion;
-
 	public Integer getUsuarioId() {
 		return usuarioId;
 	}
@@ -28,13 +25,5 @@ public class CarritoRequest {
 
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
-	}
-
-	public String getDescripcion() {
-		return descripcion;
-	}
-
-	public void setDescripcion(String descripcion) {
-		this.descripcion = descripcion;
 	}
 }
