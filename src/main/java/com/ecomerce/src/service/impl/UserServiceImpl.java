@@ -4,7 +4,6 @@ import java.util.Locale;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -22,11 +21,13 @@ import com.ecomerce.src.service.UserService;
 @Service
 public class UserServiceImpl implements UserService {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final CurrentUserService currentUserService;
 
-    @Autowired
-    private CurrentUserService currentUserService;
+    public UserServiceImpl(UserRepository userRepository, CurrentUserService currentUserService) {
+        this.userRepository = userRepository;
+        this.currentUserService = currentUserService;
+    }
 
     @Override
     public List<UserResponse> getUsers(String rol, String ciudad, String codigopostal) {
