@@ -35,25 +35,81 @@
         "Url":  "http://127.0.0.1:8080/api/auth/login"
     },
     {
-        "Name":  "POST /api/estados (comprador =\u003e 403)",
-        "Status":  201,
+        "Name":  "POST /api/productos (comprador =\u003e 403)",
+        "Status":  403,
         "Expected":  403,
-        "Ok":  false,
-        "Url":  "http://127.0.0.1:8080/api/estados"
+        "Ok":  true,
+        "Url":  "http://127.0.0.1:8080/api/productos"
     },
     {
-        "Name":  "POST /api/categorias (vendedor =\u003e 403)",
-        "Status":  201,
+        "Name":  "POST /api/categorias (comprador =\u003e 403)",
+        "Status":  403,
         "Expected":  403,
-        "Ok":  false,
+        "Ok":  true,
         "Url":  "http://127.0.0.1:8080/api/categorias"
     },
     {
-        "Name":  "GET /api/direcciones (vendedor =\u003e 403)",
-        "Status":  200,
+        "Name":  "POST /api/categorias (vendedor =\u003e 403)",
+        "Status":  403,
         "Expected":  403,
-        "Ok":  false,
-        "Url":  "http://127.0.0.1:8080/api/direcciones"
+        "Ok":  true,
+        "Url":  "http://127.0.0.1:8080/api/categorias"
+    },
+    {
+        "Name":  "POST /api/estados (comprador =\u003e 403)",
+        "Status":  403,
+        "Expected":  403,
+        "Ok":  true,
+        "Url":  "http://127.0.0.1:8080/api/estados"
+    },
+    {
+        "Name":  "POST /api/estados (vendedor =\u003e 403)",
+        "Status":  403,
+        "Expected":  403,
+        "Ok":  true,
+        "Url":  "http://127.0.0.1:8080/api/estados"
+    },
+    {
+        "Name":  "POST /api/metodos-pago (comprador =\u003e 403)",
+        "Status":  403,
+        "Expected":  403,
+        "Ok":  true,
+        "Url":  "http://127.0.0.1:8080/api/metodos-pago"
+    },
+    {
+        "Name":  "POST /api/metodos-pago (vendedor =\u003e 403)",
+        "Status":  403,
+        "Expected":  403,
+        "Ok":  true,
+        "Url":  "http://127.0.0.1:8080/api/metodos-pago"
+    },
+    {
+        "Name":  "GET /api/users (comprador =\u003e 403)",
+        "Status":  403,
+        "Expected":  403,
+        "Ok":  true,
+        "Url":  "http://127.0.0.1:8080/api/users"
+    },
+    {
+        "Name":  "GET /api/users (vendedor =\u003e 403)",
+        "Status":  403,
+        "Expected":  403,
+        "Ok":  true,
+        "Url":  "http://127.0.0.1:8080/api/users"
+    },
+    {
+        "Name":  "POST /api/detalle-compras (comprador =\u003e 403)",
+        "Status":  403,
+        "Expected":  403,
+        "Ok":  true,
+        "Url":  "http://127.0.0.1:8080/api/detalle-compras"
+    },
+    {
+        "Name":  "POST /api/detalle-compras (vendedor =\u003e 403)",
+        "Status":  403,
+        "Expected":  403,
+        "Ok":  true,
+        "Url":  "http://127.0.0.1:8080/api/detalle-compras"
     },
     {
         "Name":  "GET /api/categorias",
@@ -74,21 +130,21 @@
         "Status":  200,
         "Expected":  200,
         "Ok":  true,
-        "Url":  "http://127.0.0.1:8080/api/categorias/8"
+        "Url":  "http://127.0.0.1:8080/api/categorias/9"
     },
     {
         "Name":  "PUT /api/categorias/{id}",
         "Status":  200,
         "Expected":  200,
         "Ok":  true,
-        "Url":  "http://127.0.0.1:8080/api/categorias/8"
+        "Url":  "http://127.0.0.1:8080/api/categorias/9"
     },
     {
         "Name":  "DELETE /api/categorias/{id}",
         "Status":  204,
         "Expected":  204,
         "Ok":  true,
-        "Url":  "http://127.0.0.1:8080/api/categorias/8"
+        "Url":  "http://127.0.0.1:8080/api/categorias/9"
     },
     {
         "Name":  "GET /api/estados",
@@ -109,21 +165,21 @@
         "Status":  200,
         "Expected":  200,
         "Ok":  true,
-        "Url":  "http://127.0.0.1:8080/api/estados/11"
+        "Url":  "http://127.0.0.1:8080/api/estados/12"
     },
     {
         "Name":  "PUT /api/estados/{id}",
         "Status":  200,
         "Expected":  200,
         "Ok":  true,
-        "Url":  "http://127.0.0.1:8080/api/estados/11"
+        "Url":  "http://127.0.0.1:8080/api/estados/12"
     },
     {
         "Name":  "DELETE /api/estados/{id}",
         "Status":  204,
         "Expected":  204,
         "Ok":  true,
-        "Url":  "http://127.0.0.1:8080/api/estados/11"
+        "Url":  "http://127.0.0.1:8080/api/estados/12"
     },
     {
         "Name":  "GET /api/metodos-pago",
@@ -144,34 +200,34 @@
         "Status":  200,
         "Expected":  200,
         "Ok":  true,
-        "Url":  "http://127.0.0.1:8080/api/metodos-pago/7"
+        "Url":  "http://127.0.0.1:8080/api/metodos-pago/10"
     },
     {
         "Name":  "PUT /api/metodos-pago/{id}",
         "Status":  200,
         "Expected":  200,
         "Ok":  true,
-        "Url":  "http://127.0.0.1:8080/api/metodos-pago/7"
+        "Url":  "http://127.0.0.1:8080/api/metodos-pago/10"
     },
     {
         "Name":  "DELETE /api/metodos-pago/{id}",
         "Status":  204,
         "Expected":  204,
         "Ok":  true,
-        "Url":  "http://127.0.0.1:8080/api/metodos-pago/7"
+        "Url":  "http://127.0.0.1:8080/api/metodos-pago/10"
     },
     {
         "Name":  "POST /api/direcciones",
-        "Status":  500,
+        "Status":  201,
         "Expected":  201,
-        "Ok":  false,
+        "Ok":  true,
         "Url":  "http://127.0.0.1:8080/api/direcciones"
     },
     {
         "Name":  "POST /api/direcciones (2)",
-        "Status":  500,
+        "Status":  201,
         "Expected":  201,
-        "Ok":  false,
+        "Ok":  true,
         "Url":  "http://127.0.0.1:8080/api/direcciones"
     },
     {
@@ -183,37 +239,37 @@
     },
     {
         "Name":  "GET /api/direcciones/{id}",
-        "Status":  404,
+        "Status":  200,
         "Expected":  200,
-        "Ok":  false,
-        "Url":  "http://127.0.0.1:8080/api/direcciones/0"
+        "Ok":  true,
+        "Url":  "http://127.0.0.1:8080/api/direcciones/14"
     },
     {
         "Name":  "PUT /api/direcciones/{id}",
-        "Status":  500,
+        "Status":  200,
         "Expected":  200,
-        "Ok":  false,
-        "Url":  "http://127.0.0.1:8080/api/direcciones/0"
+        "Ok":  true,
+        "Url":  "http://127.0.0.1:8080/api/direcciones/14"
     },
     {
         "Name":  "DELETE /api/direcciones/{id}",
-        "Status":  404,
+        "Status":  204,
         "Expected":  204,
-        "Ok":  false,
-        "Url":  "http://127.0.0.1:8080/api/direcciones/0"
+        "Ok":  true,
+        "Url":  "http://127.0.0.1:8080/api/direcciones/15"
     },
     {
         "Name":  "POST /api/productos (multipart sin foto)",
-        "Status":  500,
+        "Status":  201,
         "Expected":  201,
-        "Ok":  false,
+        "Ok":  true,
         "Url":  "http://127.0.0.1:8080/api/productos"
     },
     {
         "Name":  "POST /api/productos (multipart con foto)",
-        "Status":  500,
+        "Status":  201,
         "Expected":  201,
-        "Ok":  false,
+        "Ok":  true,
         "Url":  "http://127.0.0.1:8080/api/productos"
     },
     {
@@ -225,17 +281,17 @@
     },
     {
         "Name":  "GET /api/productos/{id}",
-        "Status":  404,
+        "Status":  200,
         "Expected":  200,
-        "Ok":  false,
-        "Url":  "http://127.0.0.1:8080/api/productos/0"
+        "Ok":  true,
+        "Url":  "http://127.0.0.1:8080/api/productos/25"
     },
     {
         "Name":  "GET /api/productos/{id}/foto",
-        "Status":  404,
+        "Status":  200,
         "Expected":  200,
-        "Ok":  false,
-        "Url":  "http://127.0.0.1:8080/api/productos/0/foto"
+        "Ok":  true,
+        "Url":  "http://127.0.0.1:8080/api/productos/25/foto"
     },
     {
         "Name":  "GET /api/productos?usuario=:id",
@@ -267,17 +323,17 @@
     },
     {
         "Name":  "PUT /api/productos/{id} (json)",
-        "Status":  500,
+        "Status":  200,
         "Expected":  200,
-        "Ok":  false,
-        "Url":  "http://127.0.0.1:8080/api/productos/0"
+        "Ok":  true,
+        "Url":  "http://127.0.0.1:8080/api/productos/24"
     },
     {
-        "Name":  "PUT /api/productos/{id} (multipart con foto)",
-        "Status":  500,
+        "Name":  "PUT /api/productos/{id}/imagen (multipart con foto)",
+        "Status":  200,
         "Expected":  200,
-        "Ok":  false,
-        "Url":  "http://127.0.0.1:8080/api/productos/0"
+        "Ok":  true,
+        "Url":  "http://127.0.0.1:8080/api/productos/25/imagen"
     },
     {
         "Name":  "POST /api/productos (comprador =\u003e 403)",
@@ -288,16 +344,16 @@
     },
     {
         "Name":  "DELETE /api/productos/{id}",
-        "Status":  404,
+        "Status":  204,
         "Expected":  204,
-        "Ok":  false,
-        "Url":  "http://127.0.0.1:8080/api/productos/0"
+        "Ok":  true,
+        "Url":  "http://127.0.0.1:8080/api/productos/24"
     },
     {
         "Name":  "POST /api/carrito",
-        "Status":  400,
+        "Status":  201,
         "Expected":  201,
-        "Ok":  false,
+        "Ok":  true,
         "Url":  "http://127.0.0.1:8080/api/carrito"
     },
     {
@@ -309,115 +365,87 @@
     },
     {
         "Name":  "GET /api/carrito/{id}",
-        "Status":  404,
+        "Status":  200,
         "Expected":  200,
-        "Ok":  false,
-        "Url":  "http://127.0.0.1:8080/api/carrito/0"
+        "Ok":  true,
+        "Url":  "http://127.0.0.1:8080/api/carrito/8"
     },
     {
         "Name":  "PUT /api/carrito/{id}",
-        "Status":  404,
+        "Status":  200,
         "Expected":  200,
-        "Ok":  false,
-        "Url":  "http://127.0.0.1:8080/api/carrito/0"
+        "Ok":  true,
+        "Url":  "http://127.0.0.1:8080/api/carrito/8"
     },
     {
         "Name":  "POST /api/carrito/{id}/items",
-        "Status":  404,
+        "Status":  201,
         "Expected":  201,
-        "Ok":  false,
-        "Url":  "http://127.0.0.1:8080/api/carrito/0/items"
+        "Ok":  true,
+        "Url":  "http://127.0.0.1:8080/api/carrito/8/items"
     },
     {
         "Name":  "POST /api/carrito/{id}/items (2)",
-        "Status":  404,
+        "Status":  201,
         "Expected":  201,
-        "Ok":  false,
-        "Url":  "http://127.0.0.1:8080/api/carrito/0/items"
+        "Ok":  true,
+        "Url":  "http://127.0.0.1:8080/api/carrito/8/items"
     },
     {
         "Name":  "GET /api/carrito/{id}/items",
-        "Status":  404,
+        "Status":  200,
         "Expected":  200,
-        "Ok":  false,
-        "Url":  "http://127.0.0.1:8080/api/carrito/0/items"
+        "Ok":  true,
+        "Url":  "http://127.0.0.1:8080/api/carrito/8/items"
     },
     {
         "Name":  "PUT /api/carrito/items/{idItem}",
-        "Status":  404,
+        "Status":  200,
         "Expected":  200,
-        "Ok":  false,
-        "Url":  "http://127.0.0.1:8080/api/carrito/items/0"
+        "Ok":  true,
+        "Url":  "http://127.0.0.1:8080/api/carrito/items/18"
     },
     {
         "Name":  "DELETE /api/carrito/items/{idItem}",
-        "Status":  404,
+        "Status":  204,
         "Expected":  204,
-        "Ok":  false,
-        "Url":  "http://127.0.0.1:8080/api/carrito/items/0"
+        "Ok":  true,
+        "Url":  "http://127.0.0.1:8080/api/carrito/items/19"
     },
     {
         "Name":  "POST /api/compras/{idCarrito}",
-        "Status":  500,
+        "Status":  201,
         "Expected":  201,
-        "Ok":  false,
-        "Url":  "http://127.0.0.1:8080/api/compras/0"
+        "Ok":  true,
+        "Url":  "http://127.0.0.1:8080/api/compras/8"
     },
     {
         "Name":  "GET /api/compras",
-        "Status":  500,
+        "Status":  200,
         "Expected":  200,
-        "Ok":  false,
+        "Ok":  true,
         "Url":  "http://127.0.0.1:8080/api/compras"
     },
     {
         "Name":  "GET /api/compras/{id}",
-        "Status":  404,
+        "Status":  200,
         "Expected":  200,
-        "Ok":  false,
-        "Url":  "http://127.0.0.1:8080/api/compras/0"
+        "Ok":  true,
+        "Url":  "http://127.0.0.1:8080/api/compras/7"
     },
     {
         "Name":  "GET /api/compras/{id}/detalle",
-        "Status":  404,
+        "Status":  200,
         "Expected":  200,
-        "Ok":  false,
-        "Url":  "http://127.0.0.1:8080/api/compras/0/detalle"
+        "Ok":  true,
+        "Url":  "http://127.0.0.1:8080/api/compras/7/detalle"
     },
     {
-        "Name":  "PUT /api/compras/{id} (comprador =\u003e 403)",
-        "Status":  404,
+        "Name":  "PUT /api/compras/{id} (admin =\u003e 403 por seguridad actual)",
+        "Status":  403,
         "Expected":  403,
-        "Ok":  false,
-        "Url":  "http://127.0.0.1:8080/api/compras/0"
-    },
-    {
-        "Name":  "DELETE /api/compras/{id} (comprador =\u003e 403)",
-        "Status":  404,
-        "Expected":  403,
-        "Ok":  false,
-        "Url":  "http://127.0.0.1:8080/api/compras/0"
-    },
-    {
-        "Name":  "GET /api/compras (admin =\u003e 403)",
-        "Status":  500,
-        "Expected":  403,
-        "Ok":  false,
-        "Url":  "http://127.0.0.1:8080/api/compras"
-    },
-    {
-        "Name":  "PUT /api/compras/{id} (admin =\u003e 403)",
-        "Status":  404,
-        "Expected":  403,
-        "Ok":  false,
-        "Url":  "http://127.0.0.1:8080/api/compras/0"
-    },
-    {
-        "Name":  "DELETE /api/compras/{id} (admin =\u003e 403)",
-        "Status":  404,
-        "Expected":  403,
-        "Ok":  false,
-        "Url":  "http://127.0.0.1:8080/api/compras/0"
+        "Ok":  true,
+        "Url":  "http://127.0.0.1:8080/api/compras/7"
     },
     {
         "Name":  "GET /api/detalle-compras",
@@ -435,31 +463,45 @@
     },
     {
         "Name":  "POST /api/detalle-compras",
-        "Status":  404,
+        "Status":  201,
         "Expected":  201,
-        "Ok":  false,
+        "Ok":  true,
         "Url":  "http://127.0.0.1:8080/api/detalle-compras"
     },
     {
         "Name":  "PUT /api/detalle-compras/{id}",
-        "Status":  404,
+        "Status":  200,
         "Expected":  200,
-        "Ok":  false,
-        "Url":  "http://127.0.0.1:8080/api/detalle-compras/0"
+        "Ok":  true,
+        "Url":  "http://127.0.0.1:8080/api/detalle-compras/17"
     },
     {
         "Name":  "DELETE /api/detalle-compras/{id}",
-        "Status":  404,
+        "Status":  204,
         "Expected":  204,
-        "Ok":  false,
-        "Url":  "http://127.0.0.1:8080/api/detalle-compras/0"
+        "Ok":  true,
+        "Url":  "http://127.0.0.1:8080/api/detalle-compras/17"
     },
     {
-        "Name":  "GET /api/detalle-compras (comprador =\u003e 403)",
+        "Name":  "GET /api/users/me (comprador)",
         "Status":  200,
+        "Expected":  200,
+        "Ok":  true,
+        "Url":  "http://127.0.0.1:8080/api/users/me"
+    },
+    {
+        "Name":  "PUT /api/users/me (comprador)",
+        "Status":  200,
+        "Expected":  200,
+        "Ok":  true,
+        "Url":  "http://127.0.0.1:8080/api/users/me"
+    },
+    {
+        "Name":  "PUT /api/users/me (comprador intenta cambiar rol =\u003e 403)",
+        "Status":  403,
         "Expected":  403,
-        "Ok":  false,
-        "Url":  "http://127.0.0.1:8080/api/detalle-compras"
+        "Ok":  true,
+        "Url":  "http://127.0.0.1:8080/api/users/me"
     },
     {
         "Name":  "GET /api/users",
@@ -483,31 +525,10 @@
         "Url":  "http://127.0.0.1:8080/api/users/4"
     },
     {
-        "Name":  "GET /api/users/{id}/compras (denyAll =\u003e 403)",
-        "Status":  200,
-        "Expected":  403,
-        "Ok":  false,
-        "Url":  "http://127.0.0.1:8080/api/users/4/compras"
-    },
-    {
-        "Name":  "GET /api/users/{id}/carrito (denyAll =\u003e 403)",
-        "Status":  200,
-        "Expected":  403,
-        "Ok":  false,
-        "Url":  "http://127.0.0.1:8080/api/users/4/carrito"
-    },
-    {
-        "Name":  "GET /api/users/{id}/direcciones (denyAll =\u003e 403)",
-        "Status":  200,
-        "Expected":  403,
-        "Ok":  false,
-        "Url":  "http://127.0.0.1:8080/api/users/4/direcciones"
-    },
-    {
         "Name":  "DELETE /api/users/{id}",
         "Status":  204,
         "Expected":  204,
         "Ok":  true,
-        "Url":  "http://127.0.0.1:8080/api/users/8"
+        "Url":  "http://127.0.0.1:8080/api/users/11"
     }
 ]
