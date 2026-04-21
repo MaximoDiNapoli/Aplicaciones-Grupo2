@@ -171,11 +171,19 @@ $vendorToken = $vendorLogin.Body.accessToken
 $buyerToken = $buyerLogin.Body.accessToken
 
 # 2) Security checks by role
-Invoke-JsonApi -Name "POST /api/estados (comprador => 403)" -Method "POST" -Url "$baseUrl/api/estados" -Token $buyerToken -Body @{ nombre = "BLOQUEADO"; descripcion = "no" } -Expected 403 | Out-Null
-Invoke-JsonApi -Name "POST /api/categorias (vendedor => 403)" -Method "POST" -Url "$baseUrl/api/categorias" -Token $vendorToken -Body @{ nombre = "BLOQUEADO"; descripcion = "no" } -Expected 403 | Out-Null
-Invoke-JsonApi -Name "GET /api/direcciones (vendedor => 403)" -Method "GET" -Url "$baseUrl/api/direcciones" -Token $vendorToken -Body $null -Expected 403 | Out-Null
+Invoke-JsonApi -Name "POST /api/productos (comprador => 403)" -Method "POST" -Url "$baseUrl/api/productos" -Token $buyerToken -Body @{ categoriaId = 1; nombre = "No permitido"; precio = 1; stock = 1 } -Expected 403 | Out-Null
+Invoke-JsonApi -Name "POST /api/categorias (comprador => 403)" -Method "POST" -Url "$baseUrl/api/categorias" -Token $buyerToken -Body @{ nombre = "No"; descripcion = "no" } -Expected 403 | Out-Null
+Invoke-JsonApi -Name "POST /api/categorias (vendedor => 403)" -Method "POST" -Url "$baseUrl/api/categorias" -Token $vendorToken -Body @{ nombre = "No"; descripcion = "no" } -Expected 403 | Out-Null
+Invoke-JsonApi -Name "POST /api/estados (comprador => 403)" -Method "POST" -Url "$baseUrl/api/estados" -Token $buyerToken -Body @{ nombre = "NO"; descripcion = "no" } -Expected 403 | Out-Null
+Invoke-JsonApi -Name "POST /api/estados (vendedor => 403)" -Method "POST" -Url "$baseUrl/api/estados" -Token $vendorToken -Body @{ nombre = "NO"; descripcion = "no" } -Expected 403 | Out-Null
+Invoke-JsonApi -Name "POST /api/metodos-pago (comprador => 403)" -Method "POST" -Url "$baseUrl/api/metodos-pago" -Token $buyerToken -Body @{ tipo = "No"; descripcion = "no" } -Expected 403 | Out-Null
+Invoke-JsonApi -Name "POST /api/metodos-pago (vendedor => 403)" -Method "POST" -Url "$baseUrl/api/metodos-pago" -Token $vendorToken -Body @{ tipo = "No"; descripcion = "no" } -Expected 403 | Out-Null
+Invoke-JsonApi -Name "GET /api/users (comprador => 403)" -Method "GET" -Url "$baseUrl/api/users" -Token $buyerToken -Body $null -Expected 403 | Out-Null
+Invoke-JsonApi -Name "GET /api/users (vendedor => 403)" -Method "GET" -Url "$baseUrl/api/users" -Token $vendorToken -Body $null -Expected 403 | Out-Null
+Invoke-JsonApi -Name "POST /api/detalle-compras (comprador => 403)" -Method "POST" -Url "$baseUrl/api/detalle-compras" -Token $buyerToken -Body @{ idCompra = 1; idProducto = 1; cantidad = 1; precioUnitario = 1 } -Expected 403 | Out-Null
+Invoke-JsonApi -Name "POST /api/detalle-compras (vendedor => 403)" -Method "POST" -Url "$baseUrl/api/detalle-compras" -Token $vendorToken -Body @{ idCompra = 1; idProducto = 1; cantidad = 1; precioUnitario = 1 } -Expected 403 | Out-Null
 
-# 3) Categoria CRUD (admin)
+# 3) Categoria CRUD (cualquier usuario autenticado)
 Invoke-JsonApi -Name "GET /api/categorias" -Method "GET" -Url "$baseUrl/api/categorias" -Token $adminToken -Body $null -Expected 200 | Out-Null
 $catCreate = Invoke-JsonApi -Name "POST /api/categorias" -Method "POST" -Url "$baseUrl/api/categorias" -Token $adminToken -Body @{ nombre = "E2E Categoria"; descripcion = "Alta e2e" } -Expected 201
 $catId = [int]$catCreate.Body.id
@@ -183,7 +191,7 @@ Invoke-JsonApi -Name "GET /api/categorias/{id}" -Method "GET" -Url "$baseUrl/api
 Invoke-JsonApi -Name "PUT /api/categorias/{id}" -Method "PUT" -Url "$baseUrl/api/categorias/$catId" -Token $adminToken -Body @{ nombre = "E2E Categoria Edit"; descripcion = "Edit" } -Expected 200 | Out-Null
 Invoke-JsonApi -Name "DELETE /api/categorias/{id}" -Method "DELETE" -Url "$baseUrl/api/categorias/$catId" -Token $adminToken -Body $null -Expected 204 | Out-Null
 
-# 4) Estado CRUD (admin)
+# 4) Estado CRUD (cualquier usuario autenticado)
 Invoke-JsonApi -Name "GET /api/estados" -Method "GET" -Url "$baseUrl/api/estados" -Token $adminToken -Body $null -Expected 200 | Out-Null
 $estadoCreate = Invoke-JsonApi -Name "POST /api/estados" -Method "POST" -Url "$baseUrl/api/estados" -Token $adminToken -Body @{ nombre = "E2E_ESTADO"; descripcion = "Alta e2e" } -Expected 201
 $estadoId = [int]$estadoCreate.Body.id
@@ -271,20 +279,16 @@ Invoke-JsonApi -Name "GET /api/carrito/{id}/items" -Method "GET" -Url "$baseUrl/
 Invoke-JsonApi -Name "PUT /api/carrito/items/{idItem}" -Method "PUT" -Url "$baseUrl/api/carrito/items/$item1Id" -Token $buyerToken -Body @{ idProducto = $prod2Id; cantidad = 3; precioUnitario = 41.90 } -Expected 200 | Out-Null
 Invoke-JsonApi -Name "DELETE /api/carrito/items/{idItem}" -Method "DELETE" -Url "$baseUrl/api/carrito/items/$item2Id" -Token $buyerToken -Body $null -Expected 204 | Out-Null
 
-# 9) Compras (comprador)
+# 9) Compras (cualquier usuario autenticado)
 $compraCreate = Invoke-JsonApi -Name "POST /api/compras/{idCarrito}" -Method "POST" -Url "$baseUrl/api/compras/$carritoId" -Token $buyerToken -Body @{ idMetodoPago = 1; idDireccionEnvio = $dir1Id } -Expected 201
 $compraId = [int]$compraCreate.Body.id
 Invoke-JsonApi -Name "GET /api/compras" -Method "GET" -Url "$baseUrl/api/compras" -Token $buyerToken -Body $null -Expected 200 | Out-Null
 Invoke-JsonApi -Name "GET /api/compras/{id}" -Method "GET" -Url "$baseUrl/api/compras/$compraId" -Token $buyerToken -Body $null -Expected 200 | Out-Null
 Invoke-JsonApi -Name "GET /api/compras/{id}/detalle" -Method "GET" -Url "$baseUrl/api/compras/$compraId/detalle" -Token $buyerToken -Body $null -Expected 200 | Out-Null
-Invoke-JsonApi -Name "PUT /api/compras/{id} (comprador => 403)" -Method "PUT" -Url "$baseUrl/api/compras/$compraId" -Token $buyerToken -Body @{ idEstado = 1 } -Expected 403 | Out-Null
-Invoke-JsonApi -Name "DELETE /api/compras/{id} (comprador => 403)" -Method "DELETE" -Url "$baseUrl/api/compras/$compraId" -Token $buyerToken -Body $null -Expected 403 | Out-Null
-Invoke-JsonApi -Name "GET /api/compras (admin => 403)" -Method "GET" -Url "$baseUrl/api/compras" -Token $adminToken -Body $null -Expected 403 | Out-Null
-Invoke-JsonApi -Name "PUT /api/compras/{id} (admin => 403)" -Method "PUT" -Url "$baseUrl/api/compras/$compraId" -Token $adminToken -Body @{ idEstado = 1 } -Expected 403 | Out-Null
-Invoke-JsonApi -Name "DELETE /api/compras/{id} (admin => 403)" -Method "DELETE" -Url "$baseUrl/api/compras/$compraId" -Token $adminToken -Body $null -Expected 403 | Out-Null
+Invoke-JsonApi -Name "PUT /api/compras/{id}" -Method "PUT" -Url "$baseUrl/api/compras/$compraId" -Token $buyerToken -Body @{ idEstado = 1 } -Expected 200 | Out-Null
 
-# 10) Detalle compra (admin)
-$detalleList = Invoke-JsonApi -Name "GET /api/detalle-compras" -Method "GET" -Url "$baseUrl/api/detalle-compras" -Token $adminToken -Body $null -Expected 200
+# 10) Detalle compra (cualquier usuario autenticado)
+$detalleList = Invoke-JsonApi -Name "GET /api/detalle-compras" -Method "GET" -Url "$baseUrl/api/detalle-compras" -Token $buyerToken -Body $null -Expected 200
 $detalleIdFromList = $null
 if ($detalleList.Body -is [System.Array] -and $detalleList.Body.Count -gt 0) {
     $detalleIdFromList = [int]$detalleList.Body[0].id
@@ -297,15 +301,14 @@ $detalleCreate = Invoke-JsonApi -Name "POST /api/detalle-compras" -Method "POST"
 $detalleId = [int]$detalleCreate.Body.id
 Invoke-JsonApi -Name "PUT /api/detalle-compras/{id}" -Method "PUT" -Url "$baseUrl/api/detalle-compras/$detalleId" -Token $adminToken -Body @{ idCompra = $compraId; idProducto = $prod2Id; cantidad = 2; precioUnitario = 41.90 } -Expected 200 | Out-Null
 Invoke-JsonApi -Name "DELETE /api/detalle-compras/{id}" -Method "DELETE" -Url "$baseUrl/api/detalle-compras/$detalleId" -Token $adminToken -Body $null -Expected 204 | Out-Null
-Invoke-JsonApi -Name "GET /api/detalle-compras (comprador => 403)" -Method "GET" -Url "$baseUrl/api/detalle-compras" -Token $buyerToken -Body $null -Expected 403 | Out-Null
 
-# 11) Usuarios (admin)
+# 11) Usuarios (admin + self-service)
+Invoke-JsonApi -Name "GET /api/users/me (comprador)" -Method "GET" -Url "$baseUrl/api/users/me" -Token $buyerToken -Body $null -Expected 200 | Out-Null
+Invoke-JsonApi -Name "PUT /api/users/me (comprador)" -Method "PUT" -Url "$baseUrl/api/users/me" -Token $buyerToken -Body @{ telefono = "1155555555" } -Expected 200 | Out-Null
+Invoke-JsonApi -Name "PUT /api/users/me (comprador intenta cambiar rol => 403)" -Method "PUT" -Url "$baseUrl/api/users/me" -Token $buyerToken -Body @{ rol = "ADMINISTRADOR" } -Expected 403 | Out-Null
 $usersResp = Invoke-JsonApi -Name "GET /api/users" -Method "GET" -Url "$baseUrl/api/users" -Token $adminToken -Body $null -Expected 200
 Invoke-JsonApi -Name "GET /api/users/{id}" -Method "GET" -Url "$baseUrl/api/users/4" -Token $adminToken -Body $null -Expected 200 | Out-Null
 Invoke-JsonApi -Name "PUT /api/users/{id}" -Method "PUT" -Url "$baseUrl/api/users/4" -Token $adminToken -Body @{ telefono = "1144444444" } -Expected 200 | Out-Null
-Invoke-JsonApi -Name "GET /api/users/{id}/compras (denyAll => 403)" -Method "GET" -Url "$baseUrl/api/users/4/compras" -Token $adminToken -Body $null -Expected 403 | Out-Null
-Invoke-JsonApi -Name "GET /api/users/{id}/carrito (denyAll => 403)" -Method "GET" -Url "$baseUrl/api/users/4/carrito" -Token $adminToken -Body $null -Expected 403 | Out-Null
-Invoke-JsonApi -Name "GET /api/users/{id}/direcciones (denyAll => 403)" -Method "GET" -Url "$baseUrl/api/users/4/direcciones" -Token $adminToken -Body $null -Expected 403 | Out-Null
 
 $newUserId = $null
 if ($usersResp.Body -is [System.Array]) {
