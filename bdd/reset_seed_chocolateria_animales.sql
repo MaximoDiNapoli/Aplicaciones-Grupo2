@@ -31,6 +31,8 @@ INSERT INTO categoria (nombre) VALUES
 ('Edicion Pascua');
 
 INSERT INTO estado (nombre, descripcion) VALUES
+('NUEVO', 'Compra recién creada'),
+('PAGADO', 'Pago acreditado'),
 ('PENDIENTE', 'Compra creada y pendiente de pago'),
 ('PAGADA', 'Pago acreditado'),
 ('EN_PREPARACION', 'Pedido en armado en cocina'),
@@ -100,9 +102,9 @@ INSERT INTO detallecarrito (id_carrito, id_producto, cantidad, precio_unitario) 
 
 -- Compras historicas
 INSERT INTO compra (id_carrito, id_usuario, id_estado, id_metodo_pago, id_direccion_envio, total) VALUES
-(1, 4, 5, 4, 1, 44.58),
-(2, 5, 4, 2, 3, 70.46),
-(3, 6, 3, 3, 4, 86.50);
+(1, 4, 1, 4, 1, 44.58),
+(2, 5, 2, 2, 3, 70.46),
+(3, 6, 2, 3, 4, 86.50);
 
 INSERT INTO detallecompra (id_compra, id_producto, cantidad, precio_unitario, subtotal) VALUES
 (1, 1, 2, 8.42, 16.84),
