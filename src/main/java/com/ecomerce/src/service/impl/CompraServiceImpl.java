@@ -200,6 +200,11 @@ public class CompraServiceImpl implements CompraService {
 		}
 
 		Integer currentUserId = currentUserService.getCurrentUserId();
+		// El vendedor puede ver una compra que incluya alguno de sus productos.
+		if (currentUserService.isVendedor()
+				&& detalleCompraRepository.existsByIdCompraAndProducto_UsuarioId(compra.getId(), currentUserId)) {
+			return;
+		}
 		if (!currentUserId.equals(compra.getIdUsuario())) {
 			throw new AccessDeniedException("No tiene permisos para acceder a esta compra");
 		}
