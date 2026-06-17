@@ -134,8 +134,15 @@ public class CompraServiceImpl implements CompraService {
 
 	@Override
 	public List<Compra> listarMisCompras() {
-		Integer currentUserId = currentUserService.getCurrentUserId();
-		return compraRepository.findByIdUsuario(currentUserId);
+		// Admin ve todas las compras; el vendedor ve las que incluyen sus productos;
+		// el comprador ve únicamente las propias.
+		if (currentUserService.isAdmin()) {
+			return compraRepository.findAll();
+		}
+		if (currentUserService.isVendedor()) {
+			return compraRepository.findDistinctByVendedor(currentUserService.getCurrentUserId());
+		}
+		return compraRepository.findByIdUsuario(currentUserService.getCurrentUserId());
 	}
 
 	@Override

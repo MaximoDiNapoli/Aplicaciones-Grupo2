@@ -14,14 +14,14 @@ TRUNCATE TABLE metodopago;
 TRUNCATE TABLE usuario;
 SET FOREIGN_KEY_CHECKS = 1;
 
--- Usuarios (password para todos: Secret123!)
+-- Usuarios (password para todos: 123)
 INSERT INTO usuario (nombre, email, telefono, password_hash, rol) VALUES
-('Sofia Molina', 'admin@selvachoco.com', '1130001000', '$2a$10$DS.n4kk3ucs5ZgoU5Q0o5eVvqTDRUHP/dkwe3apvOIZbnD0a43dOe', 'ADMINISTRADOR'),
-('Marco Rivas', 'marco@selvachoco.com', '1130002000', '$2a$10$DS.n4kk3ucs5ZgoU5Q0o5eVvqTDRUHP/dkwe3apvOIZbnD0a43dOe', 'VENDEDOR'),
-('Luna Herrera', 'luna@selvachoco.com', '1130003000', '$2a$10$DS.n4kk3ucs5ZgoU5Q0o5eVvqTDRUHP/dkwe3apvOIZbnD0a43dOe', 'VENDEDOR'),
-('Camila Perez', 'camila@cliente.com', '1141001000', '$2a$10$DS.n4kk3ucs5ZgoU5Q0o5eVvqTDRUHP/dkwe3apvOIZbnD0a43dOe', 'COMPRADOR'),
-('Diego Flores', 'diego@cliente.com', '1141002000', '$2a$10$DS.n4kk3ucs5ZgoU5Q0o5eVvqTDRUHP/dkwe3apvOIZbnD0a43dOe', 'COMPRADOR'),
-('Valentina Ruiz', 'valentina@cliente.com', '1141003000', '$2a$10$DS.n4kk3ucs5ZgoU5Q0o5eVvqTDRUHP/dkwe3apvOIZbnD0a43dOe', 'COMPRADOR');
+('Sofia Molina', 'admin@gmail.com', '1130001000', '$2a$10$J28lA7PSEfEJs3ITbGzUz.7nvHCbc.1dAuk2XY4ZXl8EmGNP8KgiS', 'ADMINISTRADOR'),
+('Vendedor Demo', 'vendedor@gmail.com', '1130002000', '$2a$10$J28lA7PSEfEJs3ITbGzUz.7nvHCbc.1dAuk2XY4ZXl8EmGNP8KgiS', 'VENDEDOR'),
+('Luna Herrera', 'luna@gmail.com', '1130003000', '$2a$10$J28lA7PSEfEJs3ITbGzUz.7nvHCbc.1dAuk2XY4ZXl8EmGNP8KgiS', 'VENDEDOR'),
+('Comprador Demo', 'comprador@gmail.com', '1141001000', '$2a$10$J28lA7PSEfEJs3ITbGzUz.7nvHCbc.1dAuk2XY4ZXl8EmGNP8KgiS', 'COMPRADOR'),
+('Diego Flores', 'diego@gmail.com', '1141002000', '$2a$10$J28lA7PSEfEJs3ITbGzUz.7nvHCbc.1dAuk2XY4ZXl8EmGNP8KgiS', 'COMPRADOR'),
+('Valentina Ruiz', 'valentina@gmail.com', '1141003000', '$2a$10$J28lA7PSEfEJs3ITbGzUz.7nvHCbc.1dAuk2XY4ZXl8EmGNP8KgiS', 'COMPRADOR');
 
 -- Catalogo
 INSERT INTO categoria (nombre) VALUES

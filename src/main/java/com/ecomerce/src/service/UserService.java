@@ -9,6 +9,8 @@ public interface UserService {
 
     public List<UserResponse> getUsers(String rol, String ciudad, String codigopostal);
 
+    public UserResponse createUser(UserRequest userDetails);
+
     public UserResponse getUserById(Integer id);
 
     public UserResponse updateUser(Integer id, UserRequest userDetails);

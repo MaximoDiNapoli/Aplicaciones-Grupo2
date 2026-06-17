@@ -35,25 +35,24 @@ public class Compra extends BaseEntity {
 	@Column(name = "id_estado")
 	private Integer idEstado;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	// Entidades hoja (sin relaciones de vuelta): se cargan EAGER y se exponen en el
+	// JSON para que el frontend muestre estado, método de pago y dirección reales.
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "id_estado", insertable = false, updatable = false)
-	@JsonIgnore
 	private Estado estado;
 
 	@Column(name = "id_metodo_pago")
 	private Integer idMetodoPago;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "id_metodo_pago", insertable = false, updatable = false)
-	@JsonIgnore
 	private MetodoPago metodoPago;
 
 	@Column(name = "id_direccion_envio")
 	private Integer idDireccionEnvio;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "id_direccion_envio", insertable = false, updatable = false)
-	@JsonIgnore
 	private DireccionEnvio direccionEnvio;
 
 	@Column(nullable = false, precision = 10, scale = 2)

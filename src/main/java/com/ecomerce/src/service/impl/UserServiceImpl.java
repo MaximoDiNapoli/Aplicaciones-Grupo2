@@ -2,12 +2,14 @@ package com.ecomerce.src.service.impl;
 
 import java.util.Locale;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.ecomerce.src.dto.UserRequest;
@@ -21,12 +23,43 @@ import com.ecomerce.src.service.UserService;
 @Service
 public class UserServiceImpl implements UserService {
 
+    private static final Set<String> ALLOWED_ROLES = Set.of("COMPRADOR", "VENDEDOR", "ADMINISTRADOR", "USER");
+
     private final UserRepository userRepository;
     private final CurrentUserService currentUserService;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserServiceImpl(UserRepository userRepository, CurrentUserService currentUserService) {
+    public UserServiceImpl(UserRepository userRepository, CurrentUserService currentUserService,
+            PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.currentUserService = currentUserService;
+        this.passwordEncoder = passwordEncoder;
+    }
+
+    @Override
+    public UserResponse createUser(UserRequest userDetails) {
+        if (userRepository.existsByEmail(userDetails.getEmail())) {
+            throw new IllegalArgumentException("Ya existe un usuario con ese email");
+        }
+        if (userDetails.getPassword() == null || userDetails.getPassword().isBlank()) {
+            throw new IllegalArgumentException("La contraseña es requerida");
+        }
+
+        String rol = (userDetails.getRol() == null || userDetails.getRol().isBlank())
+                ? "COMPRADOR"
+                : userDetails.getRol().trim().toUpperCase(Locale.ROOT);
+        if (!ALLOWED_ROLES.contains(rol)) {
+            throw new IllegalArgumentException("Rol invalido. Roles permitidos: COMPRADOR, VENDEDOR, ADMINISTRADOR");
+        }
+
+        User usuario = new User();
+        usuario.setNombre(userDetails.getNombre());
+        usuario.setEmail(userDetails.getEmail());
+        usuario.setTelefono(userDetails.getTelefono());
+        usuario.setRol(rol);
+        usuario.setPasswordHash(passwordEncoder.encode(userDetails.getPassword()));
+
+        return this.crearResponseDTO(this.userRepository.save(usuario));
     }
 
     @Override

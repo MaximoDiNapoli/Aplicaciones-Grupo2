@@ -1,12 +1,14 @@
 package com.ecomerce.src.exception;
 
 import java.time.OffsetDateTime;
+import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
@@ -14,6 +16,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import com.ecomerce.src.dto.ErrorResponse;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ConstraintViolationException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -28,6 +31,30 @@ public class GlobalExceptionHandler {
 	public ResponseEntity<ErrorResponse> handleIllegalArgument(IllegalArgumentException exception,
 			HttpServletRequest request) {
 		return buildResponse(HttpStatus.BAD_REQUEST, exception.getMessage(), request.getRequestURI());
+	}
+
+	@ExceptionHandler(MethodArgumentNotValidException.class)
+	public ResponseEntity<ErrorResponse> handleValidation(MethodArgumentNotValidException exception,
+			HttpServletRequest request) {
+		String message = exception.getBindingResult().getFieldErrors().stream()
+				.map(error -> error.getField() + ": " + error.getDefaultMessage())
+				.collect(Collectors.joining(", "));
+		if (message.isBlank()) {
+			message = "Datos invalidos";
+		}
+		return buildResponse(HttpStatus.BAD_REQUEST, message, request.getRequestURI());
+	}
+
+	@ExceptionHandler(ConstraintViolationException.class)
+	public ResponseEntity<ErrorResponse> handleConstraintViolation(ConstraintViolationException exception,
+			HttpServletRequest request) {
+		String message = exception.getConstraintViolations().stream()
+				.map(violation -> violation.getPropertyPath() + ": " + violation.getMessage())
+				.collect(Collectors.joining(", "));
+		if (message.isBlank()) {
+			message = "Datos invalidos";
+		}
+		return buildResponse(HttpStatus.BAD_REQUEST, message, request.getRequestURI());
 	}
 
 	@ExceptionHandler(BadCredentialsException.class)
