@@ -108,6 +108,10 @@ public class CompraServiceImpl implements CompraService {
 		compra.setIdUsuario(currentUserId);
 		compra.setIdMetodoPago(request.getIdMetodoPago());
 		compra.setIdDireccionEnvio(request.getIdDireccionEnvio());
+		// Estado inicial de la compra: PENDIENTE (o NUEVO) si existe en el catálogo de estados.
+		estadoRepository.findFirstByNombreIgnoreCase("PENDIENTE")
+				.or(() -> estadoRepository.findFirstByNombreIgnoreCase("NUEVO"))
+				.ifPresent(estado -> compra.setIdEstado(estado.getId()));
 		compra.setTotal(total);
 		Compra savedCompra = compraRepository.save(compra);
 
