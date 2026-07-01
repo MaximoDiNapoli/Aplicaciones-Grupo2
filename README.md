@@ -49,4 +49,15 @@ https://github.com/MaximoDiNapoli/Aplicaciones-Grupo2
 
 Existen scrips para poblar la bdd para poder realizar pruebas rapidas, bdd\reset_seed_chocolateria_animales.sql
 
+Comando para cargar el script de prueba (Ejecutar antes de levantar con spring-boot):
 
+```bash
+	Get-Content .\bdd\reset_seed_chocolateria_animales.sql | docker exec -i aplicaciones-grupo2-mysql mysql -uecomerce -pecomerce123 ecomerce_db
+```
+Troubleshoot:
+Si la estructura de la base de datos anterior quedó en cache ejecutar los comandos en el siguiente orden:
+ ```bash
+	docker compose down -v
+ 	docker compose up -d
+```
+ 
