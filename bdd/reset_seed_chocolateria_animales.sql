@@ -118,6 +118,10 @@ INSERT INTO detallecompra (id_compra, id_producto, cantidad, precio_unitario, su
 (3, 15, 1, 23.92, 23.92),
 (3, 12, 5, 8.10, 40.50);
 
+-- Fotos de los productos: ejecutar a continuación `source bdd/seed_images.sql` (blobs JPEG
+-- de fotostest, generados con `node bdd/generate_seed_images.mjs`). Si no se corre, los
+-- productos quedan sin foto y el front muestra el gradiente de respaldo.
+
 -- Reseñas (usuarios 4/5/6 son COMPRADOR; productos 1..15 existen)
 INSERT INTO resena (id_producto, id_usuario, puntuacion, comentario) VALUES
 (1, 4, 5, 'Excelente, el conejito quedo perfecto para regalar.'),

@@ -1,9 +1,16 @@
 package com.ecomerce.src.config;
 
+import java.awt.Color;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.math.BigDecimal;
+
+import javax.imageio.ImageIO;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -71,9 +78,17 @@ public class DataSeeder implements CommandLineRunner {
 		metodoPagoRepository.save(new MetodoPago("Efectivo", "Pago al recibir"));
 
 		Product trufa = productRepository.save(newProduct(vendedor.getId(), chocolates.getId(), "Trufa de Cacao Oscuro",
-				new BigDecimal("12.50"), 25, "Trufa artesanal de cacao 70% con miel silvestre."));
+				new BigDecimal("12.50"), 25, "Trufa artesanal de cacao 70% con miel silvestre.", "foto1.png"));
 		productRepository.save(newProduct(vendedor.getId(), gomitas.getId(), "Ositos de Goma Ácidos",
-				new BigDecimal("4.20"), 120, "Ositos frutales con cobertura ácida."));
+				new BigDecimal("4.20"), 120, "Ositos frutales con cobertura ácida.", "foto2.png"));
+		productRepository.save(newProduct(vendedor.getId(), chocolates.getId(), "Bombones Rellenos x12",
+				new BigDecimal("18.90"), 40, "Caja de 12 bombones rellenos surtidos.", "foto3.jpeg"));
+		productRepository.save(newProduct(vendedor.getId(), gomitas.getId(), "Gusanitos Frutales",
+				new BigDecimal("3.80"), 200, "Gomitas alargadas con doble sabor.", "foto4.png"));
+		productRepository.save(newProduct(vendedor.getId(), chocolates.getId(), "Tableta Chocolate con Leche",
+				new BigDecimal("6.50"), 90, "Tableta clásica de chocolate con leche 100g.", "foto1.png"));
+		productRepository.save(newProduct(vendedor.getId(), gomitas.getId(), "Malvaviscos de Vainilla",
+				new BigDecimal("5.00"), 75, "Nubes esponjosas de vainilla para compartir.", "foto2.png"));
 
 		resenaRepository.save(newResena(trufa.getId(), comprador.getId(), 5, "Excelente, muy recomendado para regalar."));
 		resenaRepository.save(newResena(trufa.getId(), comprador.getId(), 4, "Muy rico aunque un poco dulce."));
@@ -90,7 +105,7 @@ public class DataSeeder implements CommandLineRunner {
 	}
 
 	private Product newProduct(Integer usuarioId, Integer categoriaId, String nombre, BigDecimal precio,
-			Integer stock, String descripcion) {
+			Integer stock, String descripcion, String fotoRecurso) {
 		Product product = new Product();
 		product.setUsuarioId(usuarioId);
 		product.setCategoriaId(categoriaId);
@@ -99,7 +114,27 @@ public class DataSeeder implements CommandLineRunner {
 		product.setStock(stock);
 		product.setDescripcion(descripcion);
 		product.setActivo(true);
+		product.setFoto(cargarFoto(fotoRecurso));
 		return product;
+	}
+
+	// Carga una foto real de src/main/resources/seed-images/ y la re-encodea a JPEG
+	// (el endpoint /api/productos/{id}/foto sirve image/jpeg). Devuelve null si no se puede leer.
+	private byte[] cargarFoto(String recurso) {
+		try (InputStream in = new ClassPathResource("seed-images/" + recurso).getInputStream()) {
+			BufferedImage original = ImageIO.read(in);
+			if (original == null) {
+				return null;
+			}
+			// Aplana posible transparencia (PNG) sobre fondo blanco antes de pasar a JPEG.
+			BufferedImage rgb = new BufferedImage(original.getWidth(), original.getHeight(), BufferedImage.TYPE_INT_RGB);
+			rgb.createGraphics().drawImage(original, 0, 0, Color.WHITE, null);
+			ByteArrayOutputStream out = new ByteArrayOutputStream();
+			ImageIO.write(rgb, "jpg", out);
+			return out.toByteArray();
+		} catch (Exception e) {
+			return null;
+		}
 	}
 
 	private Resena newResena(Integer idProducto, Integer idUsuario, int puntuacion, String comentario) {
