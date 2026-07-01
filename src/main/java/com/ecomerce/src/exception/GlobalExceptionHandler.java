@@ -12,6 +12,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import com.ecomerce.src.dto.ErrorResponse;
 
@@ -80,6 +81,13 @@ public class GlobalExceptionHandler {
 	public ResponseEntity<ErrorResponse> handleHttpMessageNotReadable(HttpMessageNotReadableException exception,
 			HttpServletRequest request) {
 		return buildResponse(HttpStatus.BAD_REQUEST, "Cuerpo de solicitud invalido", request.getRequestURI());
+	}
+
+	@ExceptionHandler(MaxUploadSizeExceededException.class)
+	public ResponseEntity<ErrorResponse> handleMaxUploadSize(MaxUploadSizeExceededException exception,
+			HttpServletRequest request) {
+		return buildResponse(HttpStatus.valueOf(413),
+				"La imagen es demasiado grande. El maximo permitido es 10 MB.", request.getRequestURI());
 	}
 
 	@ExceptionHandler(Exception.class)
