@@ -108,6 +108,10 @@ public class CompraServiceImpl implements CompraService {
 		compra.setIdUsuario(currentUserId);
 		compra.setIdMetodoPago(request.getIdMetodoPago());
 		compra.setIdDireccionEnvio(request.getIdDireccionEnvio());
+		// Estado inicial de la compra: PENDIENTE (o NUEVO) si existe en el catálogo de estados.
+		estadoRepository.findFirstByNombreIgnoreCase("PENDIENTE")
+				.or(() -> estadoRepository.findFirstByNombreIgnoreCase("NUEVO"))
+				.ifPresent(estado -> compra.setIdEstado(estado.getId()));
 		compra.setTotal(total);
 		Compra savedCompra = compraRepository.save(compra);
 
@@ -134,8 +138,15 @@ public class CompraServiceImpl implements CompraService {
 
 	@Override
 	public List<Compra> listarMisCompras() {
-		Integer currentUserId = currentUserService.getCurrentUserId();
-		return compraRepository.findByIdUsuario(currentUserId);
+		// Admin ve todas las compras; el vendedor ve las que incluyen sus productos;
+		// el comprador ve únicamente las propias.
+		if (currentUserService.isAdmin()) {
+			return compraRepository.findAll();
+		}
+		if (currentUserService.isVendedor()) {
+			return compraRepository.findDistinctByVendedor(currentUserService.getCurrentUserId());
+		}
+		return compraRepository.findByIdUsuario(currentUserService.getCurrentUserId());
 	}
 
 	@Override
@@ -193,6 +204,11 @@ public class CompraServiceImpl implements CompraService {
 		}
 
 		Integer currentUserId = currentUserService.getCurrentUserId();
+		// El vendedor puede ver una compra que incluya alguno de sus productos.
+		if (currentUserService.isVendedor()
+				&& detalleCompraRepository.existsByIdCompraAndProducto_UsuarioId(compra.getId(), currentUserId)) {
+			return;
+		}
 		if (!currentUserId.equals(compra.getIdUsuario())) {
 			throw new AccessDeniedException("No tiene permisos para acceder a esta compra");
 		}

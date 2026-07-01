@@ -29,37 +29,34 @@ public class JwtService {
 
 	public String generateToken(UserDetails userDetails, Integer userId) {
 		long now = System.currentTimeMillis();
-		var builder = Jwts.builder()
-				.subject(userDetails.getUsername())
+		// El subject del token es el id del usuario (no el email/nombre).
+		String subject = userId != null ? String.valueOf(userId) : userDetails.getUsername();
+		return Jwts.builder()
+				.subject(subject)
 				.issuedAt(new Date(now))
 				.expiration(new Date(now + expirationMs))
-				.signWith(getSigningKey());
-
-		if (userId != null) {
-			builder.claim("userId", userId);
-		}
-
-		return builder.compact();
+				.signWith(getSigningKey())
+				.compact();
 	}
 
-	public String extractUsername(String token) {
+	public String extractSubject(String token) {
 		return extractClaim(token, Claims::getSubject);
 	}
 
-	public boolean isTokenValid(String token, UserDetails userDetails) {
-		String username = extractUsername(token);
-		return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
+	public boolean isTokenValid(String token) {
+		return !isTokenExpired(token);
 	}
 
 	public Integer extractUserId(String token) {
-		Object claim = extractClaim(token, claims -> claims.get("userId"));
-		if (claim == null) {
+		String subject = extractSubject(token);
+		if (subject == null) {
 			return null;
 		}
-		if (claim instanceof Number number) {
-			return number.intValue();
+		try {
+			return Integer.valueOf(subject);
+		} catch (NumberFormatException ex) {
+			return null;
 		}
-		return Integer.valueOf(claim.toString());
 	}
 
 	private boolean isTokenExpired(String token) {

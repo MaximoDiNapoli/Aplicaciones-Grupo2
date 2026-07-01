@@ -15,6 +15,7 @@ import com.ecomerce.src.dto.ProductRequest;
 import com.ecomerce.src.entity.Product;
 import com.ecomerce.src.entity.User;
 import com.ecomerce.src.exception.ResourceNotFoundException;
+import com.ecomerce.src.repository.CategoryRepository;
 import com.ecomerce.src.repository.ProductRepository;
 import com.ecomerce.src.security.CurrentUserService;
 import com.ecomerce.src.service.ProductService;
@@ -23,10 +24,13 @@ import com.ecomerce.src.service.ProductService;
 public class ProductServiceImpl implements ProductService {
 
 	private final ProductRepository productRepository;
+	private final CategoryRepository categoryRepository;
 	private final CurrentUserService currentUserService;
 
-	public ProductServiceImpl(ProductRepository productRepository, CurrentUserService currentUserService) {
+	public ProductServiceImpl(ProductRepository productRepository, CategoryRepository categoryRepository,
+			CurrentUserService currentUserService) {
 		this.productRepository = productRepository;
+		this.categoryRepository = categoryRepository;
 		this.currentUserService = currentUserService;
 	}
 
@@ -138,6 +142,9 @@ public class ProductServiceImpl implements ProductService {
 
 	private void applyRequest(Product product, ProductRequest request) {
 		validateDiscountDates(request.getDescuentoPorcentaje(), request.getDescuentoInicio(), request.getDescuentoFin());
+		if (request.getCategoriaId() != null && !categoryRepository.existsById(request.getCategoriaId())) {
+			throw new ResourceNotFoundException("No existe la categoría con id " + request.getCategoriaId());
+		}
 		product.setCategoriaId(request.getCategoriaId());
 		product.setNombre(request.getNombre());
 		product.setPrecio(request.getPrecio());

@@ -2,6 +2,7 @@ SET NAMES utf8mb4;
 
 -- Reset total de datos (sin tocar estructura)
 SET FOREIGN_KEY_CHECKS = 0;
+TRUNCATE TABLE resena;
 TRUNCATE TABLE detallecompra;
 TRUNCATE TABLE compra;
 TRUNCATE TABLE detallecarrito;
@@ -14,14 +15,14 @@ TRUNCATE TABLE metodopago;
 TRUNCATE TABLE usuario;
 SET FOREIGN_KEY_CHECKS = 1;
 
--- Usuarios (password para todos: Secret123!)
+-- Usuarios (password para todos: 123)
 INSERT INTO usuario (nombre, email, telefono, password_hash, rol) VALUES
-('Sofia Molina', 'admin@selvachoco.com', '1130001000', '$2a$10$DS.n4kk3ucs5ZgoU5Q0o5eVvqTDRUHP/dkwe3apvOIZbnD0a43dOe', 'ADMINISTRADOR'),
-('Marco Rivas', 'marco@selvachoco.com', '1130002000', '$2a$10$DS.n4kk3ucs5ZgoU5Q0o5eVvqTDRUHP/dkwe3apvOIZbnD0a43dOe', 'VENDEDOR'),
-('Luna Herrera', 'luna@selvachoco.com', '1130003000', '$2a$10$DS.n4kk3ucs5ZgoU5Q0o5eVvqTDRUHP/dkwe3apvOIZbnD0a43dOe', 'VENDEDOR'),
-('Camila Perez', 'camila@cliente.com', '1141001000', '$2a$10$DS.n4kk3ucs5ZgoU5Q0o5eVvqTDRUHP/dkwe3apvOIZbnD0a43dOe', 'COMPRADOR'),
-('Diego Flores', 'diego@cliente.com', '1141002000', '$2a$10$DS.n4kk3ucs5ZgoU5Q0o5eVvqTDRUHP/dkwe3apvOIZbnD0a43dOe', 'COMPRADOR'),
-('Valentina Ruiz', 'valentina@cliente.com', '1141003000', '$2a$10$DS.n4kk3ucs5ZgoU5Q0o5eVvqTDRUHP/dkwe3apvOIZbnD0a43dOe', 'COMPRADOR');
+('Sofia Molina', 'admin@gmail.com', '1130001000', '$2a$10$J28lA7PSEfEJs3ITbGzUz.7nvHCbc.1dAuk2XY4ZXl8EmGNP8KgiS', 'ADMINISTRADOR'),
+('Vendedor Demo', 'vendedor@gmail.com', '1130002000', '$2a$10$J28lA7PSEfEJs3ITbGzUz.7nvHCbc.1dAuk2XY4ZXl8EmGNP8KgiS', 'VENDEDOR'),
+('Luna Herrera', 'luna@gmail.com', '1130003000', '$2a$10$J28lA7PSEfEJs3ITbGzUz.7nvHCbc.1dAuk2XY4ZXl8EmGNP8KgiS', 'VENDEDOR'),
+('Comprador Demo', 'comprador@gmail.com', '1141001000', '$2a$10$J28lA7PSEfEJs3ITbGzUz.7nvHCbc.1dAuk2XY4ZXl8EmGNP8KgiS', 'COMPRADOR'),
+('Diego Flores', 'diego@gmail.com', '1141002000', '$2a$10$J28lA7PSEfEJs3ITbGzUz.7nvHCbc.1dAuk2XY4ZXl8EmGNP8KgiS', 'COMPRADOR'),
+('Valentina Ruiz', 'valentina@gmail.com', '1141003000', '$2a$10$J28lA7PSEfEJs3ITbGzUz.7nvHCbc.1dAuk2XY4ZXl8EmGNP8KgiS', 'COMPRADOR');
 
 -- Catalogo
 INSERT INTO categoria (nombre) VALUES
@@ -116,3 +117,18 @@ INSERT INTO detallecompra (id_compra, id_producto, cantidad, precio_unitario, su
 (3, 5, 2, 11.04, 22.08),
 (3, 15, 1, 23.92, 23.92),
 (3, 12, 5, 8.10, 40.50);
+
+-- Fotos de los productos: ejecutar a continuación `source bdd/seed_images.sql` (blobs JPEG
+-- de fotostest, generados con `node bdd/generate_seed_images.mjs`). Si no se corre, los
+-- productos quedan sin foto y el front muestra el gradiente de respaldo.
+
+-- Reseñas (usuarios 4/5/6 son COMPRADOR; productos 1..15 existen)
+INSERT INTO resena (id_producto, id_usuario, puntuacion, comentario) VALUES
+(1, 4, 5, 'Excelente, el conejito quedo perfecto para regalar.'),
+(1, 5, 4, 'Muy rico aunque un poco dulce para mi gusto.'),
+(1, 6, 5, 'Repeti la compra, calidad impecable.'),
+(4, 6, 5, 'El elefante relleno de avellana es una delicia.'),
+(4, 4, 4, 'Muy bueno, llego en perfecto estado.'),
+(5, 5, 3, 'Chocolate amargo intenso, no apto para todos.'),
+(9, 4, 4, 'Buen pack surtido, ideal para compartir.'),
+(10, 6, 5, 'La caja de bombones es espectacular.');

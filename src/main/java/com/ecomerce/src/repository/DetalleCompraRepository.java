@@ -12,5 +12,8 @@ public interface DetalleCompraRepository extends JpaRepository<DetalleCompra, In
 
 	List<DetalleCompra> findByIdCompra(Integer idCompra);
 
+	// True si la compra incluye al menos un producto del vendedor indicado.
+	boolean existsByIdCompraAndProducto_UsuarioId(Integer idCompra, Integer usuarioId);
+
 	void deleteByIdCompra(Integer idCompra);
 }

@@ -10,6 +10,10 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import java.util.Arrays;
 
 import com.ecomerce.src.security.JwtAuthenticationFilter;
 
@@ -27,14 +31,18 @@ public class SecurityConfig {
 
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-		http.csrf(AbstractHttpConfigurer::disable)
+		http.cors(cors -> cors.configurationSource(corsConfigurationSource()))
+				.csrf(AbstractHttpConfigurer::disable)
 				.authorizeHttpRequests(auth -> auth
+						.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 						.requestMatchers("/api/health", "/api/auth/**", "/error").permitAll()
-						.requestMatchers(HttpMethod.GET, "/api/productos", "/api/productos/**").authenticated()
+						.requestMatchers(HttpMethod.GET, "/api/productos", "/api/productos/**").permitAll()
 						.requestMatchers(HttpMethod.POST, "/api/productos", "/api/productos/**").hasAnyRole("VENDEDOR", "ADMINISTRADOR")
 						.requestMatchers(HttpMethod.PUT, "/api/productos", "/api/productos/**").hasAnyRole("VENDEDOR", "ADMINISTRADOR")
 						.requestMatchers(HttpMethod.DELETE, "/api/productos", "/api/productos/**").hasAnyRole("VENDEDOR", "ADMINISTRADOR")
-						.requestMatchers(HttpMethod.GET, "/api/categorias", "/api/categorias/**").authenticated()
+						.requestMatchers(HttpMethod.GET, "/api/resenas", "/api/resenas/**").permitAll()
+						.requestMatchers(HttpMethod.POST, "/api/resenas", "/api/resenas/**").hasRole("COMPRADOR")
+						.requestMatchers(HttpMethod.GET, "/api/categorias", "/api/categorias/**").permitAll()
 						.requestMatchers(HttpMethod.POST, "/api/categorias", "/api/categorias/**").hasRole("ADMINISTRADOR")
 						.requestMatchers(HttpMethod.PUT, "/api/categorias", "/api/categorias/**").hasRole("ADMINISTRADOR")
 						.requestMatchers(HttpMethod.DELETE, "/api/categorias", "/api/categorias/**").hasRole("ADMINISTRADOR")
@@ -54,9 +62,9 @@ public class SecurityConfig {
 						.requestMatchers(HttpMethod.POST, "/api/carrito", "/api/carrito/**").hasRole("COMPRADOR")
 						.requestMatchers(HttpMethod.PUT, "/api/carrito", "/api/carrito/**").hasRole("COMPRADOR")
 						.requestMatchers(HttpMethod.DELETE, "/api/carrito", "/api/carrito/**").hasRole("COMPRADOR")
-						.requestMatchers(HttpMethod.GET, "/api/compras", "/api/compras/**").hasRole("COMPRADOR")
+						.requestMatchers(HttpMethod.GET, "/api/compras", "/api/compras/**").hasAnyRole("COMPRADOR", "VENDEDOR", "ADMINISTRADOR")
 						.requestMatchers(HttpMethod.POST, "/api/compras", "/api/compras/**").hasRole("COMPRADOR")
-						.requestMatchers(HttpMethod.PUT, "/api/compras", "/api/compras/**").hasRole("COMPRADOR")
+						.requestMatchers(HttpMethod.PUT, "/api/compras", "/api/compras/**").hasAnyRole("VENDEDOR", "ADMINISTRADOR")
 						.requestMatchers(HttpMethod.DELETE, "/api/compras", "/api/compras/**").hasRole("COMPRADOR")
 						.requestMatchers(HttpMethod.GET, "/api/detalle-compras", "/api/detalle-compras/**").hasRole("ADMINISTRADOR")
 						.requestMatchers(HttpMethod.POST, "/api/detalle-compras", "/api/detalle-compras/**").hasRole("ADMINISTRADOR")
@@ -71,5 +79,19 @@ public class SecurityConfig {
 				.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
 		return http.build();
+	}
+
+	@Bean
+	public CorsConfigurationSource corsConfigurationSource() {
+		CorsConfiguration configuration = new CorsConfiguration();
+		configuration.setAllowedOrigins(Arrays.asList("*"));
+		configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
+		configuration.setAllowedHeaders(Arrays.asList("*"));
+		configuration.setAllowCredentials(false);
+		configuration.setMaxAge(3600L);
+
+		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+		source.registerCorsConfiguration("/**", configuration);
+		return source;
 	}
 }
