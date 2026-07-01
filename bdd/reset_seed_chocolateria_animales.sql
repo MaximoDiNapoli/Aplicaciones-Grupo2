@@ -2,6 +2,7 @@ SET NAMES utf8mb4;
 
 -- Reset total de datos (sin tocar estructura)
 SET FOREIGN_KEY_CHECKS = 0;
+TRUNCATE TABLE resena;
 TRUNCATE TABLE detallecompra;
 TRUNCATE TABLE compra;
 TRUNCATE TABLE detallecarrito;
@@ -116,3 +117,14 @@ INSERT INTO detallecompra (id_compra, id_producto, cantidad, precio_unitario, su
 (3, 5, 2, 11.04, 22.08),
 (3, 15, 1, 23.92, 23.92),
 (3, 12, 5, 8.10, 40.50);
+
+-- Reseñas (usuarios 4/5/6 son COMPRADOR; productos 1..15 existen)
+INSERT INTO resena (id_producto, id_usuario, puntuacion, comentario) VALUES
+(1, 4, 5, 'Excelente, el conejito quedo perfecto para regalar.'),
+(1, 5, 4, 'Muy rico aunque un poco dulce para mi gusto.'),
+(1, 6, 5, 'Repeti la compra, calidad impecable.'),
+(4, 6, 5, 'El elefante relleno de avellana es una delicia.'),
+(4, 4, 4, 'Muy bueno, llego en perfecto estado.'),
+(5, 5, 3, 'Chocolate amargo intenso, no apto para todos.'),
+(9, 4, 4, 'Buen pack surtido, ideal para compartir.'),
+(10, 6, 5, 'La caja de bombones es espectacular.');

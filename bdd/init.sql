@@ -104,6 +104,18 @@ CREATE TABLE DetalleCompra (
     FOREIGN KEY (id_producto) REFERENCES Producto(id)
 );
 
+-- Reseñas de producto (rating + comentario). Un COMPRADOR puede opinar sobre un producto.
+CREATE TABLE Resena (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    id_producto INT NOT NULL,
+    id_usuario INT NOT NULL,
+    puntuacion INT NOT NULL,
+    comentario TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (id_producto) REFERENCES Producto(id) ON DELETE CASCADE,
+    FOREIGN KEY (id_usuario) REFERENCES Usuario(id) ON DELETE CASCADE
+);
+
 INSERT INTO MetodoPago (tipo, descripcion) VALUES
 ('Tarjeta de Crédito', 'Pago con tarjeta de crédito Visa, Mastercard, etc.'),
 ('Tarjeta de Débito', 'Pago con tarjeta de débito'),
